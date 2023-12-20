@@ -1,3 +1,4 @@
+// require ("dotenv").config()
 const mysql = require('mysql2'); // Dodanie biblioteki MySQL
 const cors = require('cors');
 const helmet = require('helmet');
@@ -5,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const express = require('express');
 const app = express();
 const https = require('https');
-const fetch = require('node-fetch');
+
 // app.options('*', cors());
 app.use(cors()); // Użyj Cors dla wszystkich tras
 
@@ -48,12 +49,19 @@ app.use(
 // 	res.header('Access-Control-Allow-Credentials', 'true');
 // 	next();
 //   });
+// const db = mysql.createConnection({
+// 	host: 'mysql-157993-0.cloudclusters.net',
+// 	port: 10039,
+// 	user: 'admin',
+// 	password: 'AgLEorrf',
+// 	database: 'products',
+// });
 const db = mysql.createConnection({
-	host: 'mysql-157993-0.cloudclusters.net',
-	port: 10039,
-	user: 'admin',
-	password: 'AgLEorrf',
-	database: 'products',
+	host: 'host491364.hostido.net.pl',
+	// port: 21,
+	user: 'host491364_products',
+	password: 'Panpascal69',
+	database: 'host491364_products',
 });
 
 // app.get('/test', async (req, res) => {
