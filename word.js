@@ -14,7 +14,7 @@ app.use(
 app.post('/pobierz-slowa', (req, res) => {
   const words = req.body.words || [];
   const postData = JSON.stringify({ words });
-  const reactAppURL = 'https://aesthetic-croquembouche-fd6e15.netlify.app/'; // Adres Twojej aplikacji React
+  const reactAppURL = 'https://aesthetic-croquembouche-fd6e15.netlify.app/pobierz-slowa'; // Adres Twojej aplikacji React
 
   const params = new URLSearchParams();
   params.append('data', postData);
