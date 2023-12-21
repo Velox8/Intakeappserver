@@ -8,14 +8,14 @@ const app = express();
 const https = require('https');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-app.options('*', cors());
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://aesthetic-croquembouche-fd6e15.netlify.app');
-    // Dodaj inne nagłówki, które są wymagane lub dozwolone
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    next();
+// app.options('*', cors());
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', 'https://aesthetic-croquembouche-fd6e15.netlify.app');
+//     // Dodaj inne nagłówki, które są wymagane lub dozwolone
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     res.setHeader('Access-Control-Allow-Credentials', true);
+//     next();
 // });
 // app.use(
 // 	cors({
