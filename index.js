@@ -10,20 +10,14 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 
 // app.options('*', cors());
-app.use(cors()); // Użyj Cors dla wszystkich tras
-
-
-app.use((req, res, next) => {
-	res.setHeader('Access-Control-Allow-Origin', 'https://aesthetic-croquembouche-fd6e15.netlify.app');
-	// You can set more headers as needed
-	res.setHeader(
-		'Access-Control-Allow-Methods',
-		'GET, POST, OPTIONS, PUT, PATCH, DELETE'
-	);
-	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-	res.setHeader('Access-Control-Allow-Credentials', true);
-	next();
-});
+const corsOptions = {
+	origin: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
+	methods: ['GET', 'POST', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization'],
+	credentials: true,
+  };
+  
+  app.use(cors(corsOptions));
 // app.use(
 // 	cors({
 // 		origin: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
@@ -54,9 +48,7 @@ app.use('/proxy', createProxyMiddleware({
 }));
 
 // Endpoint '/test' w twojej aplikacji serwerowej
-app.get('/test', (req, res) => {
-    res.send('Odpowiedź na zapytanie GET na /test');
-});
+
 // app.use((req, res, next) => {
 // 	res.header('Access-Control-Allow-Origin', 'https://nodejsclusters-158150-0.cloudclusters.net');
 // 	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
