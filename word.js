@@ -1,63 +1,41 @@
 const express = require('express');
-const https = require('https');
-const http = require('http');
 const cors = require('cors');
+const axios = require('axios');
+
 const app = express();
 app.use(express.json());
+
 app.use(
-	cors({
-		origin: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
-		origin: 'https://aesthetic-croquembouche-fd6e15.netlify.app/pobierz-slowa',
-		methods: ['GET', 'POST'], // Dozwolone metody
-		allowedHeaders: ['Content-Type', 'Authorization'], // Dozwolone nagłówki
-	})
+  cors({
+    origin: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
 );
-app.post('/pobierz-slowa', (req, res) => {
+
+app.post('/pobierz-slowa', async (req, res) => {
   const words = req.body.words || [];
-  const postData = JSON.stringify({ words });
-  const reactAppURL = 'https://aesthetic-croquembouche-fd6e15.netlify.app/pobierz-slowa'; // Adres Twojej aplikacji React
+  const postData = { words };
 
-  const params = new URLSearchParams();
-  params.append('data', postData);
-
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': Buffer.byteLength(params.toString())
-    }
-  };
-
-  const request = https.request(reactAppURL, options, response => {
-    let responseData = '';
-
-    response.on('data', chunk => {
-      responseData += chunk;
+  try {
+    const response = await axios.post('https://intake-app-server-production.up.railway.app/pobierz-slowa', postData);
+    console.log('Odpowiedź z aplikacji zewnętrznej:', response.data);
+    res.status(200).json({
+      success: true,
+      message: 'Odebrane słowa z serwera i wysłane do aplikacji React',
+      responseData: response.data // Odpowiedź z aplikacji zewnętrznej
     });
-
-    response.on('end', () => {
-      console.log('Odpowiedź z aplikacji React:', responseData);
-      res.status(200).json({
-        success: true,
-        message: 'Odebrane słowa z serwera i wysłane do aplikacji React'
-      });
-    });
-  });
-
-  request.on('error', error => {
-    console.error('Błąd podczas wysyłania słów do aplikacji React:', error);
+  } catch (error) {
+    console.error('Błąd podczas wysyłania słów do aplikacji zewnętrznej:', error);
     res.status(500).json({
       success: false,
-      message: 'Błąd podczas wysyłania słów do aplikacji React'
+      message: 'Błąd podczas wysyłania słów do aplikacji zewnętrznej',
+      error: error.message // Informacja o błędzie
     });
-  });
-
-  request.write(params.toString());
-  request.end();
+  }
 });
 
 const PORT = 5000;
-
-https.createServer(app).listen(PORT, () => {
+app.listen(PORT, () => {
   console.log(`Serwer Express działa na porcie ${PORT}`);
 });
