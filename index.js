@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const express = require('express');
 const app = express();
 const https = require('https');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+// const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // app.options('*', cors());
 // app.use((req, res, next) => {
@@ -195,7 +195,7 @@ db.connect((err) => {
 	}
 });
 
-const PORT = 5000;
+const PORT = 3306;
 app.listen(PORT, () => {
 	console.log(`Serwer działa na porcie ${PORT}`);
 });
