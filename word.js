@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(
 	cors({
-		origin: 'https://https://host491364.xce.pl',
+		origin: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
 		methods: ['GET', 'POST'], // Dozwolone metody
 		allowedHeaders: ['Content-Type', 'Authorization'], // Dozwolone nagłówki
 	})
@@ -14,7 +14,7 @@ app.use(
 app.post('/pobierz-slowa', (req, res) => {
   const words = req.body.words || [];
   const postData = JSON.stringify({ words });
-  const reactAppURL = 'https://host491364.xce.pl/pobierz-slowa'; // Adres Twojej aplikacji React
+  const reactAppURL = 'https://aesthetic-croquembouche-fd6e15.netlify.app/pobierz-slowa'; // Adres Twojej aplikacji React
 
   const params = new URLSearchParams();
   params.append('data', postData);

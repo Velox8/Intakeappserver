@@ -12,7 +12,7 @@ app.use(cors()); // Użyj Cors dla wszystkich tras
 
 app.get('/test', async (req, res) => {
   try {
-    const testUrl = 'https://maksymalnytrener.pl/';
+    const testUrl = 'https://aesthetic-croquembouche-fd6e15.netlify.app';
     const response = await fetch(testUrl);
     const data = await response.text();
     console.log('Odpowiedź z serwera:', data);
@@ -24,7 +24,7 @@ app.get('/test', async (req, res) => {
 });
 
 app.use((req, res, next) => {
-	res.setHeader('Access-Control-Allow-Origin', 'https://maksymalnytrener.pl');
+	res.setHeader('Access-Control-Allow-Origin', 'https://aesthetic-croquembouche-fd6e15.netlify.app');
 	// You can set more headers as needed
 	res.setHeader(
 		'Access-Control-Allow-Methods',
@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 });
 app.use(
 	cors({
-		origin: 'https://maksymalnytrener.pl',
+		origin: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
 		methods: ['GET', 'POST', 'OPTIONS'],
 		allowedHeaders: ['Content-Type', 'Authorization'],
 		credentials: true,
