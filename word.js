@@ -7,6 +7,7 @@ app.use(express.json());
 app.use(
 	cors({
 		origin: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
+		origin: 'https://aesthetic-croquembouche-fd6e15.netlify.app/pobierz-slowa',
 		methods: ['GET', 'POST'], // Dozwolone metody
 		allowedHeaders: ['Content-Type', 'Authorization'], // Dozwolone nagłówki
 	})
