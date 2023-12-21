@@ -10,18 +10,6 @@ const https = require('https');
 // app.options('*', cors());
 app.use(cors()); // Użyj Cors dla wszystkich tras
 
-app.get('/test', async (req, res) => {
-  try {
-    const testUrl = 'https://aesthetic-croquembouche-fd6e15.netlify.app';
-    const response = await fetch(testUrl);
-    const data = await response.text();
-    console.log('Odpowiedź z serwera:', data);
-    res.send('Odpowiedź na zapytanie GET na /test');
-  } catch (error) {
-    console.error('Błąd podczas połączenia:', error);
-    res.status(500).send('Błąd podczas pobierania danych');
-  }
-});
 
 app.use((req, res, next) => {
 	res.setHeader('Access-Control-Allow-Origin', 'https://aesthetic-croquembouche-fd6e15.netlify.app');
@@ -34,14 +22,26 @@ app.use((req, res, next) => {
 	res.setHeader('Access-Control-Allow-Credentials', true);
 	next();
 });
-app.use(
-	cors({
-		origin: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
-		methods: ['GET', 'POST', 'OPTIONS'],
-		allowedHeaders: ['Content-Type', 'Authorization'],
-		credentials: true,
-	})
-);
+// app.use(
+// 	cors({
+// 		origin: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
+// 		methods: ['GET', 'POST', 'OPTIONS'],
+// 		allowedHeaders: ['Content-Type', 'Authorization'],
+// 		credentials: true,
+// 	})
+// );
+app.get('/test', async (req, res) => {
+  try {
+	const testUrl = 'https://aesthetic-croquembouche-fd6e15.netlify.app';
+	const response = await fetch(testUrl);
+	const data = await response.text();
+	console.log('Odpowiedź z serwera:', data);
+	res.send('Odpowiedź na zapytanie GET na /test');
+  } catch (error) {
+	console.error('Błąd podczas połączenia:', error);
+	res.status(500).send('Błąd podczas pobierania danych');
+  }
+});
 // app.use((req, res, next) => {
 // 	res.header('Access-Control-Allow-Origin', 'https://nodejsclusters-158150-0.cloudclusters.net');
 // 	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
