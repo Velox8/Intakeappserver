@@ -1,5 +1,5 @@
 // require ("dotenv").config()
-const mysql = require('mysql2'); // Dodanie biblioteki MySQL
+const mysql = require('mysql2'); 
 const cors = require('cors');
 const helmet = require('helmet');
 const jwt = require('jsonwebtoken');
@@ -40,7 +40,7 @@ app.use('/proxy', createProxyMiddleware({
     target: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
     changeOrigin: true,
     pathRewrite: {
-        '^/proxy': '', // usuń /proxy z końcówki ścieżki
+        '^/proxy': '',
     },
     secure: false, // Jeśli adres docelowy używa HTTPS
 }));
@@ -123,7 +123,7 @@ const db = mysql.createConnection({
 // 		console.error('Błąd podczas połączenia:', error);
 // 	});
 
-// Pozostała część kodu bez zmian
+
 
 app.get('/getProducts/:username', (req, res) => {
 	const username = req.params.username;
@@ -393,7 +393,7 @@ app.post('/login', (req, res) => {
 
 	console.log('Updated token:', token); // Dodaj log zaktualizowanego tokenu
 
-	// Twój obecny kod logowania użytkownika...
+	
 	const sql = `SELECT * FROM users WHERE username = ? AND password = ?`;
 	db.get(sql, [username, password], (err, row) => {
 		if (err) {
