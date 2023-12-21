@@ -6,6 +6,8 @@ const jwt = require('jsonwebtoken');
 const express = require('express');
 const app = express();
 const https = require('https');
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
 
 // app.options('*', cors());
 app.use(cors()); // Użyj Cors dla wszystkich tras
@@ -41,6 +43,19 @@ app.get('/test', async (req, res) => {
 	console.error('Błąd podczas połączenia:', error);
 	res.status(500).send('Błąd podczas pobierania danych');
   }
+});
+app.use('/proxy', createProxyMiddleware({
+    target: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
+    changeOrigin: true,
+    pathRewrite: {
+        '^/proxy': '', // usuń /proxy z końcówki ścieżki
+    },
+    secure: false, // Jeśli adres docelowy używa HTTPS
+}));
+
+// Endpoint '/test' w twojej aplikacji serwerowej
+app.get('/test', (req, res) => {
+    res.send('Odpowiedź na zapytanie GET na /test');
 });
 // app.use((req, res, next) => {
 // 	res.header('Access-Control-Allow-Origin', 'https://nodejsclusters-158150-0.cloudclusters.net');
