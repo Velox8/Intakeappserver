@@ -19,14 +19,14 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 //     next();
 // });
 app.use(cors({
-	origin: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
+	origin: 'https://sprightly-tulumba-2baacf.netlify.app',
 	methods: ['GET', 'POST', 'OPTIONS'],
 	allowedHeaders: ['Content-Type', 'Authorization'],
 	credentials: true,
   }));
 app.get('/test', async (req, res) => {
   try {
-	const testUrl = 'https://aesthetic-croquembouche-fd6e15.netlify.app';
+	const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
 	const response = await fetch(testUrl);
 	const data = await response.text();
 	console.log('Odpowiedź z serwera:', data);
@@ -37,7 +37,7 @@ app.get('/test', async (req, res) => {
   }
 });
 app.use('/proxy', createProxyMiddleware({
-    target: 'https://aesthetic-croquembouche-fd6e15.netlify.app',
+    target: 'https://sprightly-tulumba-2baacf.netlify.app',
     changeOrigin: true,
     pathRewrite: {
         '^/proxy': '',
