@@ -1,5 +1,5 @@
 // require ("dotenv").config()
-const mysql = require('mysql2'); 
+const mysql = require('mysql2');
 const cors = require('cors');
 const helmet = require('helmet');
 const jwt = require('jsonwebtoken');
@@ -8,42 +8,46 @@ const app = express();
 const https = require('https');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-
-// app.options('*', cors());
-// app.use((req, res, next) => {
-//     res.setHeader('Access-Control-Allow-Origin', 'https://aesthetic-croquembouche-fd6e15.netlify.app');
-//     // Dodaj inne nagłówki, które są wymagane lub dozwolone
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//     res.setHeader('Access-Control-Allow-Credentials', true);
-//     next();
+app.options('*', cors());
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://aesthetic-croquembouche-fd6e15.netlify.app');
+    // Dodaj inne nagłówki, które są wymagane lub dozwolone
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
 // });
-app.use(cors({
-	origin: 'https://sprightly-tulumba-2baacf.netlify.app',
-	methods: ['GET', 'POST', 'OPTIONS'],
-	allowedHeaders: ['Content-Type', 'Authorization'],
-	credentials: true,
-  }));
+// app.use(
+// 	cors({
+// 		origin: 'https://sprightly-tulumba-2baacf.netlify.app',
+// 		methods: ['GET', 'POST', 'OPTIONS'],
+// 		allowedHeaders: ['Content-Type', 'Authorization'],
+// 		credentials: true,
+// 	})
+// );
 app.get('/test', async (req, res) => {
-  try {
-	const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
-	const response = await fetch(testUrl);
-	const data = await response.text();
-	console.log('Odpowiedź z serwera:', data);
-	res.send('Odpowiedź na zapytanie GET na /test');
-  } catch (error) {
-	console.error('Błąd podczas połączenia:', error);
-	res.status(500).send('Błąd podczas pobierania danych');
-  }
+	try {
+		const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
+		const response = await fetch(testUrl);
+		const data = await response.text();
+		console.log('Odpowiedź z serwera:', data);
+		res.send('Odpowiedź na zapytanie GET na /test');
+	} catch (error) {
+		console.error('Błąd podczas połączenia:', error);
+		res.status(500).send('Błąd podczas pobierania danych');
+	}
 });
-app.use('/proxy', createProxyMiddleware({
-    target: 'https://sprightly-tulumba-2baacf.netlify.app',
-    changeOrigin: true,
-    pathRewrite: {
-        '^/proxy': '',
-    },
-    secure: false, // Jeśli adres docelowy używa HTTPS
-}));
+app.use(
+	'/proxy',
+	createProxyMiddleware({
+		target: 'https://sprightly-tulumba-2baacf.netlify.app',
+		changeOrigin: true,
+		pathRewrite: {
+			'^/proxy': '',
+		},
+		secure: false, // Jeśli adres docelowy używa HTTPS
+	})
+);
 
 // Endpoint '/test' w twojej aplikacji serwerowej
 
@@ -122,8 +126,6 @@ const db = mysql.createConnection({
 // 	.on('error', (error) => {
 // 		console.error('Błąd podczas połączenia:', error);
 // 	});
-
-
 
 app.get('/getProducts/:username', (req, res) => {
 	const username = req.params.username;
@@ -393,7 +395,6 @@ app.post('/login', (req, res) => {
 
 	console.log('Updated token:', token); // Dodaj log zaktualizowanego tokenu
 
-	
 	const sql = `SELECT * FROM users WHERE username = ? AND password = ?`;
 	db.get(sql, [username, password], (err, row) => {
 		if (err) {
