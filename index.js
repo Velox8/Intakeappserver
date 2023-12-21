@@ -37,17 +37,17 @@ app.get('/test', async (req, res) => {
 		res.status(500).send('Błąd podczas pobierania danych');
 	}
 });
-app.use(
-	'/proxy',
-	createProxyMiddleware({
-		target: 'https://sprightly-tulumba-2baacf.netlify.app',
-		changeOrigin: true,
-		pathRewrite: {
-			'^/proxy': '',
-		},
-		secure: false, // Jeśli adres docelowy używa HTTPS
-	})
-);
+// app.use(
+// 	'/proxy',
+// 	createProxyMiddleware({
+// 		target: 'https://sprightly-tulumba-2baacf.netlify.app',
+// 		changeOrigin: true,
+// 		pathRewrite: {
+// 			'^/proxy': '',
+// 		},
+// 		secure: false, // Jeśli adres docelowy używa HTTPS
+// 	})
+// );
 
 // Endpoint '/test' w twojej aplikacji serwerowej
 
