@@ -18,19 +18,26 @@ app.options('*', cors());
 //     res.setHeader('Access-Control-Allow-Credentials', true);
 //     next();
 // });
-app.use((req, res, next) => {
-	res.header('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app'); // Określona domena
-	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-	res.header('Access-Control-Allow-Credentials', true);
-	next();
-  });
+// app.use((req, res, next) => {
+// 	res.header('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app'); // Określona domena
+// 	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+// 	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+// 	res.header('Access-Control-Allow-Credentials', true);
+// 	next();
+//   });
   app.use(cors({
     origin: 'https://sprightly-tulumba-2baacf.netlify.app',
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 }));
+
+const proxy = httpProxy.createProxyServer();
+
+
+app.use('/test', (req, res) => {
+  proxy.web(req, res, { target: 'https://intake-app-server-production.up.railway.app' });
+});
   app.post('/test', async (req, res) => {
 	try {
 		const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
