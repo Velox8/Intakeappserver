@@ -21,19 +21,22 @@ app.use(cors({
 }));
 
 app.use('/test', (req, res) => {
-  proxy.web(req, res, { target: 'https://intake-app-server-production.up.railway.app' });
+  proxy.web(req, res, { target: 'https://sprightly-tulumba-2baacf.netlify.app' });
 });
-  app.post('/test', async (req, res) => {
-	try {
-		const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
-		const response = await fetch(testUrl);
-		const data = await response.text();
-		console.log('Odpowiedź z serwera:', data);
-		res.send('Odpowiedź na zapytanie GET na /test');
-	} catch (error) {
-		console.error('Błąd podczas połączenia:', error);
-		res.status(500).send('Błąd podczas pobierania danych');
-	}
+const testUrl = `${process.env.REACT_APP_BACKEND_URL}/test`;
+
+https.get(testUrl, (response) => {
+  let data = '';
+
+  response.on('data', (chunk) => {
+    data += chunk;
+  });
+
+  response.on('end', () => {
+    console.log('Odpowiedź z serwera testUrl:', data);
+  });
+}).on('error', (error) => {
+  console.error('Błąd podczas połączenia z testUrl:', error);
 });
 // app.use(
 // 	'/proxy',
