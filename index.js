@@ -17,12 +17,13 @@ const https = require('https');
 //     res.setHeader('Access-Control-Allow-Credentials', true);
 //     next();
 // });
-app.use(cors({
-	origin: '*', // Odblokowanie wszystkich domen - ostrożnie w produkcyjnym środowisku!
-	methods: ['GET', 'POST', 'OPTIONS'], // Dopuszczone metody HTTP
-	allowedHeaders: ['Content-Type', 'Authorization'], // Dopuszczone nagłówki
-	credentials: true, // Jeśli potrzebne są ciasteczka lub nagłówki autoryzacji
-  }));
+app.use((req, res, next) => {
+	res.header('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app'); // Określona domena
+	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+	res.header('Access-Control-Allow-Credentials', true);
+	next();
+  });
   app.get('/test', cors(corsOptions), async (req, res) => {
 	try {
 		const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
