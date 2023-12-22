@@ -9,44 +9,61 @@ const https = require('https');
 const httpProxy = require('http-proxy');
 // const { createProxyMiddleware } = require('http-proxy-middleware');
 
-
 const proxy = httpProxy.createProxyServer();
+
+// Ustawienie CORS dla całej aplikacji
+app.use(cors());
+
+// Obsługa zapytań OPTIONS dla konkretnego endpointu
 app.options('/register', (req, res) => {
-	res.header('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
-	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-	res.send(); // Odpowiedź pusta dla zapytań OPTIONS
-  });
-app.use(cors({
-  origin: 'https://sprightly-tulumba-2baacf.netlify.app',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'application/json'],
+  res.header('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.send();
+});
 
-  credentials: true,
-}));
-
+// Obsługa proxy dla zewnętrznego zasobu
 app.use('/test', (req, res) => {
   proxy.web(req, res, { target: 'https://sprightly-tulumba-2baacf.netlify.app' });
 });
-app.get('/test', (req, res) => {
-	const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
+
+// const proxy = httpProxy.createProxyServer();
+// app.options('/register', (req, res) => {
+// 	res.header('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
+// 	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+// 	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+// 	res.send(); // Odpowiedź pusta dla zapytań OPTIONS
+//   });
+// app.use(cors({
+//   origin: 'https://sprightly-tulumba-2baacf.netlify.app',
+//   methods: ['GET', 'POST', 'OPTIONS'],
+//   allowedHeaders: ['Content-Type', 'Authorization', 'application/json'],
+
+//   credentials: true,
+// }));
+
+// app.use('/test', (req, res) => {
+//   proxy.web(req, res, { target: 'https://sprightly-tulumba-2baacf.netlify.app' });
+// });
+// app.get('/test', (req, res) => {
+// 	const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
   
-	https.get(testUrl, (response) => {
-	  let data = '';
+// 	https.get(testUrl, (response) => {
+// 	  let data = '';
   
-	  response.on('data', (chunk) => {
-		data += chunk;
-	  });
+// 	  response.on('data', (chunk) => {
+// 		data += chunk;
+// 	  });
   
-	  response.on('end', () => {
-		console.log('Odpowiedź z serwera testUrl:', data);
-		res.send(data); // Odeślij odpowiedź do klienta Express
-	  });
-	}).on('error', (error) => {
-	  console.error('Błąd podczas połączenia z testUrl:', error);
-	  res.status(500).send('Błąd podczas pobierania danych'); // Odeślij błąd do klienta Express
-	});
-  });
+// 	  response.on('end', () => {
+// 		console.log('Odpowiedź z serwera testUrl:', data);
+// 		res.send(data); // Odeślij odpowiedź do klienta Express
+// 	  });
+// 	}).on('error', (error) => {
+// 	  console.error('Błąd podczas połączenia z testUrl:', error);
+// 	  res.status(500).send('Błąd podczas pobierania danych'); // Odeślij błąd do klienta Express
+// 	});
+//   });
 // app.use(
 // 	'/proxy',
 // 	createProxyMiddleware({
