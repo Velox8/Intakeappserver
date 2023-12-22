@@ -90,24 +90,12 @@ db.connect((err) => {
 	db.query(setGlobalQuery, (err, results) => {
 	  if (err) {
 		console.error('Błąd podczas wykonywania polecenia SET GLOBAL:', err);
-		db.end(); // Zamknięcie połączenia w przypadku błędu
 		return;
 	  }
   
 	  console.log('Pomyślnie wykonano polecenie SET GLOBAL host_cache_size=0');
-  
-	  // Zakończenie połączenia
-	  db.end((err) => {
-		if (err) {
-		  console.error('Błąd podczas zamykania połączenia z bazą danych:', err);
-		  return;
-		}
-		console.log('Zakończono połączenie z bazą danych MySQL!');
-	  });
 	});
   });
-  
-
 // app.get('/test', async (req, res) => {
 // 	try {
 // 		const testUrl = 'https://maksymalnytrener.pl/';
