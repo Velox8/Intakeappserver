@@ -6,34 +6,19 @@ const jwt = require('jsonwebtoken');
 const express = require('express');
 const app = express();
 const https = require('https');
+const httpProxy = require('http-proxy');
 // const { createProxyMiddleware } = require('http-proxy-middleware');
 
-app.options('*', cors());
-
-// app.use((req, res, next) => {
-//     res.setHeader('Access-Control-Allow-Origin', 'https://aesthetic-croquembouche-fd6e15.netlify.app');
-//     // Dodaj inne nagłówki, które są wymagane lub dozwolone
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//     res.setHeader('Access-Control-Allow-Credentials', true);
-//     next();
-// });
-// app.use((req, res, next) => {
-// 	res.header('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app'); // Określona domena
-// 	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-// 	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-// 	res.header('Access-Control-Allow-Credentials', true);
-// 	next();
-//   });
-  app.use(cors({
-    origin: 'https://sprightly-tulumba-2baacf.netlify.app',
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-}));
 
 const proxy = httpProxy.createProxyServer();
 
+app.use(cors({
+  origin: 'https://sprightly-tulumba-2baacf.netlify.app',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'application/json'],
+
+  credentials: true,
+}));
 
 app.use('/test', (req, res) => {
   proxy.web(req, res, { target: 'https://intake-app-server-production.up.railway.app' });
