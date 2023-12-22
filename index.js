@@ -11,7 +11,12 @@ const httpProxy = require('http-proxy');
 
 
 const proxy = httpProxy.createProxyServer();
-
+app.options('/register', (req, res) => {
+	res.header('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
+	res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+	res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+	res.send(); // Odpowiedź pusta dla zapytań OPTIONS
+  });
 app.use(cors({
   origin: 'https://sprightly-tulumba-2baacf.netlify.app',
   methods: ['GET', 'POST', 'OPTIONS'],
@@ -401,6 +406,8 @@ app.post('/register', (req, res) => {
 			.status(201)
 			.json({ message: 'Użytkownik został zarejestrowany.', token });
 	});
+	console.log('Received POST request:', req.body); // Logowanie danych żądania
+  res.send('Response from server')
 });
 
 // Endpoint logowania użytkownika
