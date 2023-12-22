@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Credentials', true);
 	next();
   });
-  app.get('/test', async (req, res) => {
+  app.post('/test', async (req, res) => {
 	try {
 		const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
 		const response = await fetch(testUrl);
