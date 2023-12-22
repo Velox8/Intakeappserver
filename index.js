@@ -20,7 +20,7 @@ app.options('/register', (req, res) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.send();
-});
+}); 
 
 // Obsługa proxy dla zewnętrznego zasobu
 app.use('/test', (req, res) => {
