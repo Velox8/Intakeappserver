@@ -23,21 +23,25 @@ app.use(cors({
 app.use('/test', (req, res) => {
   proxy.web(req, res, { target: 'https://sprightly-tulumba-2baacf.netlify.app' });
 });
-const testUrl = `${process.env.REACT_APP_BACKEND_URL}/test`;
-
-https.get(testUrl, (response) => {
-  let data = '';
-
-  response.on('data', (chunk) => {
-    data += chunk;
+app.get('/test', (req, res) => {
+	const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
+  
+	https.get(testUrl, (response) => {
+	  let data = '';
+  
+	  response.on('data', (chunk) => {
+		data += chunk;
+	  });
+  
+	  response.on('end', () => {
+		console.log('Odpowiedź z serwera testUrl:', data);
+		res.send(data); // Odeślij odpowiedź do klienta Express
+	  });
+	}).on('error', (error) => {
+	  console.error('Błąd podczas połączenia z testUrl:', error);
+	  res.status(500).send('Błąd podczas pobierania danych'); // Odeślij błąd do klienta Express
+	});
   });
-
-  response.on('end', () => {
-    console.log('Odpowiedź z serwera testUrl:', data);
-  });
-}).on('error', (error) => {
-  console.error('Błąd podczas połączenia z testUrl:', error);
-});
 // app.use(
 // 	'/proxy',
 // 	createProxyMiddleware({
