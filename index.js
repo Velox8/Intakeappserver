@@ -79,6 +79,34 @@ const db = mysql.createConnection({
 	password: '4G2BdHHBfC3B214AcBb4cCC4hdD66h1C',
 	database: 'railway',
 });
+db.connect((err) => {
+	if (err) {
+	  console.error('Błąd podczas nawiązywania połączenia z bazą danych:', err);
+	  return;
+	}
+	console.log('Połączono z bazą danych MySQL!');
+  
+	const setGlobalQuery = 'SET GLOBAL host_cache_size=0';
+	db.query(setGlobalQuery, (err, results) => {
+	  if (err) {
+		console.error('Błąd podczas wykonywania polecenia SET GLOBAL:', err);
+		db.end(); // Zamknięcie połączenia w przypadku błędu
+		return;
+	  }
+  
+	  console.log('Pomyślnie wykonano polecenie SET GLOBAL host_cache_size=0');
+  
+	  // Zakończenie połączenia
+	  db.end((err) => {
+		if (err) {
+		  console.error('Błąd podczas zamykania połączenia z bazą danych:', err);
+		  return;
+		}
+		console.log('Zakończono połączenie z bazą danych MySQL!');
+	  });
+	});
+  });
+  
 
 // app.get('/test', async (req, res) => {
 // 	try {
