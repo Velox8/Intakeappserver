@@ -21,7 +21,15 @@ app.options('/register', (req, res) => {
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.send();
 }); 
-
+app.post('/odbierzDane', (req, res) => {
+	const receivedData = req.body.data; // Odebranie danych z zapytania
+	console.log('Otrzymane dane:', receivedData);
+  
+	// Tutaj możesz przetwarzać dane i wykonywać odpowiednie działania
+  
+	const responseMessage = 'Dane odebrane pomyślnie'; // Odpowiedź do frontendu
+	res.status(200).json({ message: responseMessage });
+  });
 // Obsługa proxy dla zewnętrznego zasobu
 app.use('/test', (req, res) => {
   proxy.web(req, res, { target: 'https://sprightly-tulumba-2baacf.netlify.app' });
