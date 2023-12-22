@@ -8,7 +8,8 @@ const app = express();
 const https = require('https');
 // const { createProxyMiddleware } = require('http-proxy-middleware');
 
-// app.options('*', cors());
+app.options('*', cors());
+
 // app.use((req, res, next) => {
 //     res.setHeader('Access-Control-Allow-Origin', 'https://aesthetic-croquembouche-fd6e15.netlify.app');
 //     // Dodaj inne nagłówki, które są wymagane lub dozwolone
@@ -24,6 +25,12 @@ app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Credentials', true);
 	next();
   });
+  app.use(cors({
+    origin: 'https://sprightly-tulumba-2baacf.netlify.app',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+}));
   app.post('/test', async (req, res) => {
 	try {
 		const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
