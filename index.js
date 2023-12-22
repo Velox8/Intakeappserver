@@ -23,7 +23,7 @@ app.use(cors({
 	allowedHeaders: ['Content-Type', 'Authorization'], // Dopuszczone nagłówki
 	credentials: true, // Jeśli potrzebne są ciasteczka lub nagłówki autoryzacji
   }));
-app.get('/test', async (req, res) => {
+  app.get('/test', cors(corsOptions), async (req, res) => {
 	try {
 		const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
 		const response = await fetch(testUrl);
