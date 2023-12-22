@@ -17,14 +17,14 @@ const https = require('https');
 //     res.setHeader('Access-Control-Allow-Credentials', true);
 //     next();
 // });
-// app.use(
-// 	cors({
-// 		origin: 'https://sprightly-tulumba-2baacf.netlify.app',
-// 		methods: ['GET', 'POST', 'OPTIONS'],
-// 		allowedHeaders: ['Content-Type', 'Authorization'],
-// 		credentials: true,
-// 	})
-// );
+app.use(
+	cors({
+		origin: 'https://sprightly-tulumba-2baacf.netlify.app',
+		methods: ['GET', 'POST', 'OPTIONS'],
+		allowedHeaders: ['Content-Type', 'Authorization'],
+		credentials: true,
+	})
+);
 app.get('/test', async (req, res) => {
 	try {
 		const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
