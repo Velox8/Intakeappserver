@@ -1,64 +1,62 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
+dotenv.config();
+
 const mysql = require("mysql2");
 const cors = require("cors");
 const helmet = require("helmet");
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const app = express();
-const https = require("https");
+const http = require("http");
 const httpProxy = require("http-proxy");
-// const { createProxyMiddleware } = require("http-proxy-middleware");
 
-const proxy = httpProxy.createProxyServer();
-
-// Ustawienie CORS dla całej aplikacji
-app.use(express.json()); // Parsowanie danych jako JSON
-app.use(helmet());
 app.use(cors({
-  origin: ["https://sprightly-tulumba-2baacf.netlify.app"], // Specyfikowanie dozwolonych originów
+  origin: ["https://sprightly-tulumba-2baacf.netlify.app"], 
 }));
-app.options('/register', cors());
-app.options('/login', cors());
-app.options('/test', cors());
-app.options('/addTask', cors());
-app.options('/odbierzDane', cors());
+app.use(express.json());
 
-// Obsługa zapytań OPTIONS dla konkretnego endpointu
+
+app.use(express.json()); // Parsowanie danych jako JSON
+app.use(helmet()); // Dodanie zabezpieczeń Helmet
+app.use(
+	cors({
+		origin: 'https://sprightly-tulumba-2baacf.netlify.app',
+		methods: ['GET', 'POST'], // Dozwolone metody
+		allowedHeaders: ['Content-Type', 'Authorization'], // Dozwolone nagłówki
+	})
+);
+app.options('/addTask', cors());
+app.options('/register', cors());
+app.options('/odbierzDane', cors());
+app.options('/test', cors());
+
 app.options("/register", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*"); // Dozwolone wszystkie originy
+  res.header("Access-Control-Allow-Origin", "https://sprightly-tulumba-2baacf.netlify.app");
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.send();
 });
 
 app.options("/odbierzDane", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*"); // Dozwolone wszystkie originy
+  res.header("Access-Control-Allow-Origin", "https://sprightly-tulumba-2baacf.netlify.app");
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.send();
 });
 
-app.use("/proxy", (req, res) => {
-  const url = "https://intake-app-server-production.up.railway.app" + req.url;
-  req.pipe(request(url)).pipe(res);
-});
-
 app.post("/odbierzDane", (req, res) => {
-  const receivedData = req.body.data; // Odebranie danych z zapytania
+  const receivedData = req.body.data;
   console.log("Otrzymane dane:", receivedData);
 
-  // Tutaj możesz przetwarzać dane i wykonywać odpowiednie działania
-
-  const responseMessage = "Dane odebrane pomyślnie"; // Odpowiedź do frontendu
+  const responseMessage = "Dane odebrane pomyślnie";
   res.status(200).json({ message: responseMessage });
 });
 
-// Obsługa proxy dla zewnętrznego zasobu
-app.use("/test", (req, res) => {
-  proxy.web(req, res, {
-    target: "https://sprightly-tulumba-2baacf.netlify.app", // Specyfikacja targetu proxy
-  });
-});
+// Obsługa proxy dla zewnętrznego zasobu - tu jest poprawka
+// const proxy = httpProxy.createProxyServer();
+// app.use('/proxy', (req, res) => {
+//   proxy.web(req, res, { target: 'http://localhost:3000' });
+// });
 
 // const proxy = httpProxy.createProxyServer();
 // app.options('/register', (req, res) => {
@@ -76,27 +74,28 @@ app.use("/test", (req, res) => {
 // }));
 
 // app.use('/test', (req, res) => {
-//   proxy.web(req, res, { target: 'https://sprightly-tulumba-2baacf.netlify.app' });
+//   proxy.web(req, res, { target: 'http:/localhost:3000' });
 // });
-// app.get('/test', (req, res) => {
-// 	const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
-  
-// 	https.get(testUrl, (response) => {
-// 	  let data = '';
-  
-// 	  response.on('data', (chunk) => {
-// 		data += chunk;
-// 	  });
-  
-// 	  response.on('end', () => {
-// 		console.log('Odpowiedź z serwera testUrl:', data);
-// 		res.send(data); // Odeślij odpowiedź do klienta Express
-// 	  });
-// 	}).on('error', (error) => {
-// 	  console.error('Błąd podczas połączenia z testUrl:', error);
-// 	  res.status(500).send('Błąd podczas pobierania danych'); // Odeślij błąd do klienta Express
-// 	});
-//   });
+app.get('/test', (req, res) => {
+	const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
+
+	// Wykonaj żądanie GET za pomocą modułu http
+	http.get(testUrl, (response) => {
+		let data = '';
+
+		response.on('data', (chunk) => {
+			data += chunk;
+		});
+
+		response.on('end', () => {
+			console.log('Odpowiedź z serwera testUrl:', data);
+			res.send(data); // Odeślij odpowiedź do klienta Express
+		});
+	}).on('error', (error) => {
+		console.error('Błąd podczas połączenia z testUrl:', error);
+		res.status(500).send('Błąd podczas pobierania danych'); // Odeślij błąd do klienta Express
+	});
+});
 // app.use(
 // 	'/proxy',
 // 	createProxyMiddleware({
@@ -438,28 +437,60 @@ db.query(createProductsTableQuery, (err, result) => {
 	}
 });
 
-app.post('/register', (req, res) => {
-	const { username, password, email } = req.body;
+// app.post('/register', (req, res) => {
+// 	const { username, password, email } = req.body;
 
-	const token = jwt.sign({ username, email }, secretKey, { expiresIn: '1h' });
+// 	const token = jwt.sign({ username, email }, secretKey, { expiresIn: '1h' });
 
-	const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
-	db.run(sql, [username, password, email, token], (err) => {
-		if (err) {
-			console.error('Błąd podczas rejestracji użytkownika:', err);
-			return res
-				.status(500)
-				.json({ message: 'Błąd podczas rejestracji użytkownika.' });
-		}
-		console.log('Użytkownik został zarejestrowany:', { username, email });
-		res
-			.status(201)
-			.json({ message: 'Użytkownik został zarejestrowany.', token });
-	});
-	console.log('Received POST request:', req.body); // Logowanie danych żądania
-  res.send('Response from server')
-});
+// 	const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
+// 	db.run(sql, [username, password, email, token], (err) => {
+// 		if (err) {
+// 			console.error('Błąd podczas rejestracji użytkownika:', err);
+// 			return res
+// 				.status(500)
+// 				.json({ message: 'Błąd podczas rejestracji użytkownika.' });
+// 		}
+// 		console.log('Użytkownik został zarejestrowany:', { username, email });
+// 		res
+// 			.status(201)
+// 			.json({ message: 'Użytkownik został zarejestrowany.', token });
+// 	});
+// 	console.log('Received POST request:', req.body); // Logowanie danych żądania
+//   res.send('Response from server')
+// });
 
+app.use(express.json());
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app'); // Zmodyfikuj na właściwy adres Twojego localhost
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+  
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(200); // Odpowiedź 200 na żądania OPTIONS
+    } else {
+      next(); // Przejdź do kolejnego middleware'u dla innych rodzajów żądań
+    }
+  });
+  app.post('/register', (req, res) => {
+    const { username, password, email } = req.body;
+  
+    const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '1h' });
+  
+    const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
+    db.query(sql, [username, password, email, token], (err, result) => {
+      if (err) {
+        console.error('Błąd podczas rejestracji użytkownika:', err);
+        return res
+          .status(500)
+          .json({ message: 'Błąd podczas rejestracji użytkownika.' });
+      }
+      console.log('Użytkownik został zarejestrowany:', { username, email });
+      res
+        .status(201)
+        .json({ message: 'Użytkownik został zarejestrowany.', token });
+    });
+  });
 // Endpoint logowania użytkownika
 app.post('/login', (req, res) => {
 	const { username, password } = req.body;

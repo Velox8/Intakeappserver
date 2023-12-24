@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.json()); // Parsowanie danych jako JSON
 app.use(helmet()); // Dodanie zabezpieczeń Helmet
-
+const http = require("http");
 app.use(
 	cors({
 		origin: 'http://localhost:3000',
@@ -29,6 +29,28 @@ const dbTasks = new sqlite3.Database('tasks.db', (err) => {
 		throw err;
 	}
 	console.log('Connected to the tasks database.');
+});
+
+
+app.get('/test', (req, res) => {
+	const testUrl = 'http://localhost:3000';
+
+	// Wykonaj żądanie GET za pomocą modułu http
+	http.get(testUrl, (response) => {
+		let data = '';
+
+		response.on('data', (chunk) => {
+			data += chunk;
+		});
+
+		response.on('end', () => {
+			console.log('Odpowiedź z serwera testUrl:', data);
+			res.send(data); // Odeślij odpowiedź do klienta Express
+		});
+	}).on('error', (error) => {
+		console.error('Błąd podczas połączenia z testUrl:', error);
+		res.status(500).send('Błąd podczas pobierania danych'); // Odeślij błąd do klienta Express
+	});
 });
 // const dbTasks = new sqlite3.Database('tasks.db', (err) => {
 // 	if (err) {
