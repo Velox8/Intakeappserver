@@ -1,4 +1,6 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
+dotenv.config();
+
 const mysql = require("mysql2");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -7,22 +9,23 @@ const express = require("express");
 const app = express();
 const https = require("https");
 const httpProxy = require("http-proxy");
-// const { createProxyMiddleware } = require("http-proxy-middleware");
-
-const proxy = httpProxy.createProxyServer();
 
 // Ustawienie CORS dla całej aplikacji
-app.use(express.json()); // Parsowanie danych jako JSON
-app.use(helmet());
+
+// app.use(cors({
+//   origin: ["https://sprightly-tulumba-2baacf.netlify.app"], 
+// }));
 app.use(cors({
-  origin: ["https://sprightly-tulumba-2baacf.netlify.app"], // Specyfikowanie dozwolonych originów
+  origin: ["http://localhost:3000"], 
 }));
-app.options('/register', cors());
-app.options('/login', cors());
-app.options('/test', cors());
+app.use(express.json())
+
 app.options('/addTask', cors());
+app.options('/register', cors());
 app.options('/odbierzDane', cors());
 
+
+app.options('/Test', cors());
 // Obsługa zapytań OPTIONS dla konkretnego endpointu
 app.options("/register", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*"); // Dozwolone wszystkie originy
@@ -38,8 +41,9 @@ app.options("/odbierzDane", (req, res) => {
   res.send();
 });
 
+// Obsługa proxy dla zewnętrznego zasobu
 app.use("/proxy", (req, res) => {
-  const url = "https://intake-app-server-production.up.railway.app" + req.url;
+  const url = "http://localhost:3000" + req.url;
   req.pipe(request(url)).pipe(res);
 });
 
@@ -52,14 +56,6 @@ app.post("/odbierzDane", (req, res) => {
   const responseMessage = "Dane odebrane pomyślnie"; // Odpowiedź do frontendu
   res.status(200).json({ message: responseMessage });
 });
-
-// Obsługa proxy dla zewnętrznego zasobu
-app.use("/test", (req, res) => {
-  proxy.web(req, res, {
-    target: "https://sprightly-tulumba-2baacf.netlify.app", // Specyfikacja targetu proxy
-  });
-});
-
 // const proxy = httpProxy.createProxyServer();
 // app.options('/register', (req, res) => {
 // 	res.header('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
