@@ -270,7 +270,7 @@ db.connect((err) => {
 	}
 });
 
-const PORT = 5000;
+const PORT = 3306;
 app.listen(PORT, () => {
 	console.log(`Serwer działa na porcie ${PORT}`);
 });
