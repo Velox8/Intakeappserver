@@ -20,21 +20,30 @@ app.options('/register', (req, res) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.send();
-}); 
+});
+
+app.options('/odbierzDane', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.send();
+});
+
 app.use('/proxy', (req, res) => {
-	const url = 'https://intake-app-server-production.up.railway.app' + req.url;
-	req.pipe(request(url)).pipe(res);
+    const url = 'https://intake-app-server-production.up.railway.app' + req.url;
+    req.pipe(request(url)).pipe(res);
   });
-  
+
 app.post('/odbierzDane', (req, res) => {
-	const receivedData = req.body.data; // Odebranie danych z zapytania
-	console.log('Otrzymane dane:', receivedData);
-  
-	// Tutaj możesz przetwarzać dane i wykonywać odpowiednie działania
-  
-	const responseMessage = 'Dane odebrane pomyślnie'; // Odpowiedź do frontendu
-	res.status(200).json({ message: responseMessage });
+    const receivedData = req.body.data; // Odebranie danych z zapytania
+    console.log('Otrzymane dane:', receivedData);
+
+    // Tutaj możesz przetwarzać dane i wykonywać odpowiednie działania
+
+    const responseMessage = 'Dane odebrane pomyślnie'; // Odpowiedź do frontendu
+    res.status(200).json({ message: responseMessage });
   });
+
 // Obsługa proxy dla zewnętrznego zasobu
 app.use('/test', (req, res) => {
   proxy.web(req, res, { target: 'https://sprightly-tulumba-2baacf.netlify.app' });
