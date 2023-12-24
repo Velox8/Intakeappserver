@@ -9,40 +9,37 @@ const express = require("express");
 const app = express();
 const http = require("http");
 const httpProxy = require("http-proxy");
-
-app.use(cors({
-  origin: ["https://michorzewski.com"], 
-}));
 app.use(express.json());
 
 
-app.use(express.json()); // Parsowanie danych jako JSON
+
+
+
 app.use(helmet()); // Dodanie zabezpieczeń Helmet
-app.use(
-	cors({
-		origin: 'https://michorzewski.com',
-		methods: ['GET', 'POST'], // Dozwolone metody
-		allowedHeaders: ['Content-Type', 'Authorization'], // Dozwolone nagłówki
-	})
-);
+app.use(cors({
+	origin: 'https://michorzewski.com',
+	methods: ['GET', 'POST', 'PUT', 'DELETE'],
+	allowedHeaders: ['Content-Type', 'Authorization'],
+	credentials: true
+  }));
 app.options('/addTask', cors());
 app.options('/register', cors());
 app.options('/odbierzDane', cors());
 app.options('/test', cors());
 
-app.options("/register", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://michorzewski.com");
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.send();
-});
+// app.options("/register", (req, res) => {
+//   res.header("Access-Control-Allow-Origin", "https://michorzewski.com");
+//   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   res.send();
+// });
 
-app.options("/odbierzDane", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://michorzewski.com");
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.send();
-});
+// app.options("/odbierzDane", (req, res) => {
+//   res.header("Access-Control-Allow-Origin", "https://michorzewski.com");
+//   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   res.send();
+// });
 
 app.post("/odbierzDane", (req, res) => {
   const receivedData = req.body.data;
@@ -459,7 +456,7 @@ db.query(createProductsTableQuery, (err, result) => {
 //   res.send('Response from server')
 // });
 
-app.use(express.json());
+
 // app.use((req, res, next) => {
 //     res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app'); // Zmodyfikuj na właściwy adres Twojego localhost
 //     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -473,21 +470,27 @@ app.use(express.json());
 //     }
 //   });
   
-app.use((req, res, next) => {
-	// Ustawienie odpowiedniego adresu dla produkcji
-	res.setHeader('Access-Control-Allow-Origin', 'https://michorzewski.com');
-	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-	res.setHeader('Access-Control-Allow-Credentials', true);
+// app.use((req, res, next) => {
+// 	// Ustawienie odpowiedniego adresu dla produkcji
+// 	res.setHeader('Access-Control-Allow-Origin', 'https://michorzewski.com');
+// 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+// 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+// 	res.setHeader('Access-Control-Allow-Credentials', true);
 	
-	if (req.method === 'OPTIONS') {
-	  // Dodać Allow dla obsługiwanych metod
-	  res.setHeader('Allow', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-	  res.sendStatus(200); // Odpowiedź 200 na żądania OPTIONS
-	} else {
-	  next(); // Przejdź do kolejnego middleware'u dla innych rodzajów żądań
-	}
-  });
+// 	if (req.method === 'OPTIONS') {
+// 	  // Dodać Allow dla obsługiwanych metod
+// 	  res.setHeader('Allow', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+// 	  res.sendStatus(200); // Odpowiedź 200 na żądania OPTIONS
+// 	} else {
+// 	  next(); // Przejdź do kolejnego middleware'u dla innych rodzajów żądań
+// 	}
+//   });
+//   app.use(cors({
+// 	origin: 'https://michorzewski.com', // Adres, który ma mieć dostęp
+// 	methods: ['GET', 'POST', 'PUT', 'DELETE'], // Obsługiwane metody
+// 	allowedHeaders: ['Content-Type', 'Authorization'], // Dozwolone nagłówki
+// 	credentials: true // Ustawienie w przypadku używania ciasteczek lub autoryzacji
+//   }));
   app.post('/register', (req, res) => {
     const { username, password, email } = req.body;
   
