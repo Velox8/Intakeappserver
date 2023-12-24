@@ -495,7 +495,7 @@ app.use((req, res, next) => {
   
     const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
     db.query(sql, [username, password, email, token], (err, result) => {
-      if (err) {
+      if (err) { 
         console.error('Błąd podczas rejestracji użytkownika:', err);
         return res
           .status(500)
