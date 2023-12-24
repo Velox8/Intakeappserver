@@ -7,9 +7,9 @@ const helmet = require("helmet");
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const app = express();
-const https = require("https");
+const http = require("http");
 const httpProxy = require("http-proxy");
-
+app.use(cors())
 app.use(cors({
   origin: ["https://michorzewski.com"], 
 }));
