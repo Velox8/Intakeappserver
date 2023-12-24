@@ -458,6 +458,8 @@ db.query(createProductsTableQuery, (err, result) => {
 // 	console.log('Received POST request:', req.body); // Logowanie danych żądania
 //   res.send('Response from server')
 // });
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
 app.use(helmet());
 app.use(express.json());
 app.use((req, res, next) => {
@@ -472,6 +474,10 @@ app.use((req, res, next) => {
       next(); // Przejdź do kolejnego middleware'u dla innych rodzajów żądań
     }
   });
+  app.use('/api', createProxyMiddleware({ 
+	target: 'https://intake-app-server-production.up.railway.app', 
+	changeOrigin: true,
+  }));
   app.post('/register', (req, res) => {
     const { username, password, email } = req.body;
   
