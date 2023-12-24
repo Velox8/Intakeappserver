@@ -460,17 +460,33 @@ db.query(createProductsTableQuery, (err, result) => {
 // });
 
 app.use(express.json());
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app'); // Zmodyfikuj na właściwy adres Twojego localhost
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', true);
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app'); // Zmodyfikuj na właściwy adres Twojego localhost
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     res.setHeader('Access-Control-Allow-Credentials', true);
   
-    if (req.method === 'OPTIONS') {
-      res.sendStatus(200); // Odpowiedź 200 na żądania OPTIONS
-    } else {
-      next(); // Przejdź do kolejnego middleware'u dla innych rodzajów żądań
-    }
+//     if (req.method === 'OPTIONS') {
+//       res.sendStatus(200); // Odpowiedź 200 na żądania OPTIONS
+//     } else {
+//       next(); // Przejdź do kolejnego middleware'u dla innych rodzajów żądań
+//     }
+//   });
+  
+app.use((req, res, next) => {
+	// Ustawienie odpowiedniego adresu dla produkcji
+	res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+	res.setHeader('Access-Control-Allow-Credentials', true);
+	
+	if (req.method === 'OPTIONS') {
+	  // Dodać Allow dla obsługiwanych metod
+	  res.setHeader('Allow', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+	  res.sendStatus(200); // Odpowiedź 200 na żądania OPTIONS
+	} else {
+	  next(); // Przejdź do kolejnego middleware'u dla innych rodzajów żądań
+	}
   });
   app.post('/register', (req, res) => {
     const { username, password, email } = req.body;
