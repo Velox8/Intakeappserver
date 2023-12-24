@@ -7,11 +7,11 @@ const helmet = require("helmet");
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const app = express();
-const https = require("https");
+const http = require("http");
 const httpProxy = require("http-proxy");
 
 app.use(cors({
-  origin: ["https://michorzewski.com"], 
+  origin: ["http://localhost:3000"], 
 }));
 app.use(express.json());
 
@@ -20,7 +20,7 @@ app.use(express.json()); // Parsowanie danych jako JSON
 app.use(helmet()); // Dodanie zabezpieczeń Helmet
 app.use(
 	cors({
-		origin: 'https://michorzewski.com',
+		origin: 'http://localhost:3000',
 		methods: ['GET', 'POST'], // Dozwolone metody
 		allowedHeaders: ['Content-Type', 'Authorization'], // Dozwolone nagłówki
 	})
@@ -31,14 +31,14 @@ app.options('/odbierzDane', cors());
 app.options('/test', cors());
 
 app.options("/register", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://michorzewski.com");
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.send();
 });
 
 app.options("/odbierzDane", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://michorzewski.com");
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.send();
@@ -461,7 +461,7 @@ db.query(createProductsTableQuery, (err, result) => {
 app.use(helmet());
 app.use(express.json());
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://michorzewski.com'); // Zmodyfikuj na właściwy adres Twojego localhost
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Zmodyfikuj na właściwy adres Twojego localhost
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Credentials', true);
