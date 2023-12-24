@@ -11,7 +11,7 @@ const http = require("http");
 const httpProxy = require("http-proxy");
 
 app.use(cors({
-  origin: ["https://sprightly-tulumba-2baacf.netlify.app"], 
+  origin: ["https://michorzewski.com"], 
 }));
 app.use(express.json());
 
@@ -20,7 +20,7 @@ app.use(express.json()); // Parsowanie danych jako JSON
 app.use(helmet()); // Dodanie zabezpieczeń Helmet
 app.use(
 	cors({
-		origin: 'https://sprightly-tulumba-2baacf.netlify.app',
+		origin: 'https://michorzewski.com',
 		methods: ['GET', 'POST'], // Dozwolone metody
 		allowedHeaders: ['Content-Type', 'Authorization'], // Dozwolone nagłówki
 	})
@@ -31,14 +31,14 @@ app.options('/odbierzDane', cors());
 app.options('/test', cors());
 
 app.options("/register", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://sprightly-tulumba-2baacf.netlify.app");
+  res.header("Access-Control-Allow-Origin", "https://michorzewski.com");
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.send();
 });
 
 app.options("/odbierzDane", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://sprightly-tulumba-2baacf.netlify.app");
+  res.header("Access-Control-Allow-Origin", "https://michorzewski.com");
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.send();
@@ -77,7 +77,7 @@ app.post("/odbierzDane", (req, res) => {
 //   proxy.web(req, res, { target: 'http:/localhost:3000' });
 // });
 app.get('/test', (req, res) => {
-	const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
+	const testUrl = 'https://michorzewski.com';
 
 	// Wykonaj żądanie GET za pomocą modułu http
 	http.get(testUrl, (response) => {
@@ -475,7 +475,7 @@ app.use(express.json());
   
 app.use((req, res, next) => {
 	// Ustawienie odpowiedniego adresu dla produkcji
-	res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
+	res.setHeader('Access-Control-Allow-Origin', 'https://michorzewski.com');
 	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 	res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 	res.setHeader('Access-Control-Allow-Credentials', true);
