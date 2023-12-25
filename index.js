@@ -9,21 +9,48 @@ const express = require("express");
 const app = express();
 const http = require("https");
 const httpProxy = require("http-proxy");
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', true);
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     res.setHeader('Access-Control-Allow-Credentials', true);
 
-    if (req.method === 'OPTIONS') { 
-        res.sendStatus(200);
-    } else { 
-        next();
-    }
-});
+//     if (req.method === 'OPTIONS') { 
+//         res.sendStatus(200);
+//     } else { 
+//         next();
+//     }
+// });
 
 
 
+
+
+
+function customCors(req, res, next) {
+	// Adres, z którego chcesz zezwolić na żądania (możesz zmienić ten adres)
+	const allowedOrigin = 'https://sprightly-tulumba-2baacf.netlify.app';
+  
+	// Sprawdź, czy żądanie pochodzi z dozwolonego adresu
+	const requestOrigin = req.headers.origin;
+	if (requestOrigin === allowedOrigin) {
+	  res.setHeader('Access-Control-Allow-Origin', requestOrigin);
+	  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+	  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
+	  // Obsługa żądań OPTIONS (preflight requests)
+	  if (req.method === 'OPTIONS') {
+		res.writeHead(200);
+		res.end();
+		return;
+	  }
+	}
+  
+	next(); // Kontynuuj przetwarzanie żądania
+  }
+  
+  // Użycie naszego własnego middleware CORS
+  app.use(customCors);
 
 
 
