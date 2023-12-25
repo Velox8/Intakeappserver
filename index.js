@@ -15,12 +15,12 @@ app.use(helmet());
 app.use(express.json());
 
 app.use(cors({
-  origin: process.env.REACT_APP_BACKEND_URL,
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+	origin: 'https://sprightly-tulumba-2baacf.netlify.app',
+	methods: ['GET', 'POST', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization']
+  }));
 
-const registerEndpoint = `${process.env.REACT_APP_BACKEND_URL}/register`; // Zmień 'your_port' na właściwy port
+const registerEndpoint = 'https://sprightly-tulumba-2baacf.netlify.app/register'; // Zmień 'your_port' na właściwy port
 
 app.post('/register', (req, res) => {
     const { username, password, email } = req.body;
