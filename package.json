@@ -20,8 +20,6 @@
 		"sqlite3": "^5.1.6"
 	},
 	"scripts": {
-		"install": "npm install",
 		"start": "node index.js"
-
 	}
 }
