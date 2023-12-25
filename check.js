@@ -9,18 +9,31 @@ const express = require("express");
 const app = express();
 const http = require("https");
 const httpProxy = require("http-proxy");
-// app.use((req, res, next) => {
-//     res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
-//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//     res.setHeader('Access-Control-Allow-Credentials', true);
 
-//     if (req.method === 'OPTIONS') { 
-//         res.sendStatus(200);
-//     } else { 
-//         next();
-//     }
-// });
+
+
+app.use(express.json()); // Parsowanie danych jako JSON
+app.use(helmet());
+app.use(cors({
+  origin: ["https://sprightly-tulumba-2baacf.netlify.app"], // Specyfikowanie dozwolonych originów
+}));
+app.options('/register', cors());
+app.options('/login', cors());
+app.options('/test', cors());
+app.options('/addTask', cors());
+app.options('/odbierzDane', cors());
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', true);
+
+    if (req.method === 'OPTIONS') { 
+        res.sendStatus(200);
+    } else { 
+        next();
+    }
+});
 
 
 

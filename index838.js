@@ -12,6 +12,11 @@ const httpProxy = require("http-proxy");
 const proxy = httpProxy.createProxyServer();
 
 // Ustawienie CORS dla całej aplikacji
+
+
+
+
+
 app.use(express.json()); // Parsowanie danych jako JSON
 app.use(helmet());
 app.use(cors({
