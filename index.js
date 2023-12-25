@@ -33,7 +33,7 @@ app.use(helmet());
 app.use(express.json());
 
 function customCors(req, res, next) {
-    const allowedOrigin = 'https://sprightly-tulumba-2baacf.netlify.app';
+    const allowedOrigin = `${process.env.REACT_APP_BACKEND_URL}/register`;
     const requestOrigin = req.headers.origin;
 
     if (requestOrigin === allowedOrigin) {
