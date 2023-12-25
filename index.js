@@ -29,7 +29,7 @@ const httpProxy = require("http-proxy");
 
 function customCors(req, res, next) {
 	// Adres, z którego chcesz zezwolić na żądania (możesz zmienić ten adres)
-	const allowedOrigin = 'https://sprightly-tulumba-2baacf.netlify.app';
+	const allowedOrigin = 'https://sprightly-tulumba-2baacf.netlify.app/register';
   
 	// Sprawdź, czy żądanie pochodzi z dozwolonego adresu
 	const requestOrigin = req.headers.origin;
