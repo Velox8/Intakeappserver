@@ -9,6 +9,7 @@ const express = require("express");
 const app = express();
 const http = require("https");
 const httpProxy = require("http-proxy");
+const axios = require("axios");
 
 app.use(helmet());
 app.use(express.json());
@@ -19,21 +20,38 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+const registerEndpoint = `${process.env.REACT_APP_BACKEND_URL}/register`; // Zmień 'your_port' na właściwy port
+
 app.post('/register', (req, res) => {
     const { username, password, email } = req.body;
 
     const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '1h' });
 
-    const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
-    db.query(sql, [username, password, email, token], (err, result) => {
-        if (err) {
-            console.error('Błąd podczas rejestracji użytkownika:', err);
-            return res.status(500).json({ message: 'Błąd podczas rejestracji użytkownika.' });
+    const userData = { username, password, email };
+
+    const axiosConfig = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    axios.post(registerEndpoint, userData, axiosConfig)
+      .then(response => {
+        console.log('Odpowiedź serwera:', response.data);
+
+        if (response.status === 201) {
+          res.status(201).json({ message: 'Użytkownik został zarejestrowany.', token });
+        } else {
+          console.error('Błąd rejestracji:', response.data.message || 'Błąd rejestracji użytkownika');
+          res.status(500).json({ message: 'Błąd podczas rejestracji użytkownika.' });
         }
-        console.log('Użytkownik został zarejestrowany:', { username, email });
-        res.status(201).json({ message: 'Użytkownik został zarejestrowany.', token });
-    });
-});// const dotenv = require("dotenv");
+      })
+      .catch(error => {
+        console.error('Błąd podczas zapytania:', error);
+        res.status(500).json({ message: 'Błąd podczas rejestracji użytkownika.' });
+      });
+});
+//  const dotenv = require("dotenv");
 // dotenv.config();
 
 // const mysql = require("mysql2");
