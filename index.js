@@ -7,7 +7,7 @@ const helmet = require("helmet");
 const jwt = require("jsonwebtoken");
 const express = require("express");
 const app = express();
-const http = require("http");
+const http = require("https");
 const httpProxy = require("http-proxy");
 
 
@@ -468,7 +468,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 app.use(helmet());
 app.use(express.json());
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'https://michorzewski.com'); // Zmodyfikuj na właściwy adres Twojego localhost
+    res.setHeader('Access-Control-Allow-Origin', allowedOrigin); // Zmodyfikuj na właściwy adres Twojego localhost
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -480,7 +480,7 @@ app.use((req, res, next) => {
     }
   });
   app.use('/api', createProxyMiddleware({ 
-	target: 'https://intake-app-server-production.up.railway.app', 
+	target: process.env.REACT_APP_BACKEND_URL, 
 	changeOrigin: true,
   }));
   app.post('/register', (req, res) => {
