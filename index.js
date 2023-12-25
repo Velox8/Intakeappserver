@@ -15,7 +15,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.setHeader('Access-Control-Allow-Credentials', true);
 
-    if (req.method === 'OPTIONS') {
+    if (req.method === 'OPTIONS') { 
         res.sendStatus(200);
     } else { 
         next();
