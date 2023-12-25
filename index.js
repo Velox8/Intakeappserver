@@ -9,21 +9,27 @@ const express = require("express");
 const app = express();
 const http = require("http");
 const httpProxy = require("http-proxy");
-app.use(cors())
+
+
+
+
+
+
+
+
+const allowedOrigin = process.env.REACT_APP_BACKEND_URL
+
 app.use(cors({
-  origin: ["https://michorzewski.com"], 
+  origin: [process.env.REACT_APP_BACKEND_URL],
 }));
-app.use(express.json());
-
-
 app.use(express.json()); // Parsowanie danych jako JSON
 app.use(helmet()); // Dodanie zabezpieczeń Helmet
 app.use(
-	cors({
-		origin: 'https://michorzewski.com',
-		methods: ['GET', 'POST'], // Dozwolone metody
-		allowedHeaders: ['Content-Type', 'Authorization'], // Dozwolone nagłówki
-	})
+  cors({
+    origin: process.env.REACT_APP_BACKEND_URL,
+    methods: ['GET', 'POST'], // Dozwolone metody
+    allowedHeaders: ['Content-Type', 'Authorization'], // Dozwolone nagłówki
+  })
 );
 app.options('/addTask', cors());
 app.options('/register', cors());
@@ -31,19 +37,18 @@ app.options('/odbierzDane', cors());
 app.options('/test', cors());
 
 app.options("/register", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://michorzewski.com");
+  res.header("Access-Control-Allow-Origin", allowedOrigin);
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.send();
 });
 
 app.options("/odbierzDane", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://michorzewski.com");
+  res.header("Access-Control-Allow-Origin", allowedOrigin);
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.send();
 });
-
 app.post("/odbierzDane", (req, res) => {
   const receivedData = req.body.data;
   console.log("Otrzymane dane:", receivedData);
