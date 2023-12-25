@@ -9,7 +9,18 @@ const express = require("express");
 const app = express();
 const http = require("https");
 const httpProxy = require("http-proxy");
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', true);
 
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
 
 
 
