@@ -65,7 +65,7 @@ app.use(cors({
 // // Użycie naszego własnego middleware CORS
 // app.use(customCors);
 const db = mysql.createConnection({
-	host: 'viaduct.proxy.rlwy.net',
+	host: 'viaduct.proxy.rlwy.net', 
 	port: 47341,
 	user: 'root',
 	password: '4G2BdHHBfC3B214AcBb4cCC4hdD66h1C',
