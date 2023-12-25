@@ -55,45 +55,45 @@ function customCors(req, res, next) {
 
 
 
-const allowedOrigin = process.env.REACT_APP_BACKEND_URL
+// const allowedOrigin = process.env.REACT_APP_BACKEND_URL
 
-app.use(cors({
-  origin: [process.env.REACT_APP_BACKEND_URL],
-}));
-app.use(express.json()); // Parsowanie danych jako JSON
-app.use(helmet()); // Dodanie zabezpieczeń Helmet
-app.use(
-  cors({
-    origin: process.env.REACT_APP_BACKEND_URL,
-    methods: ['GET', 'POST'], // Dozwolone metody
-    allowedHeaders: ['Content-Type', 'Authorization'], // Dozwolone nagłówki
-  })
-);
-app.options('/addTask', cors());
-app.options('/register', cors());
-app.options('/odbierzDane', cors());
-app.options('/test', cors());
+// app.use(cors({
+//   origin: [process.env.REACT_APP_BACKEND_URL],
+// }));
+// app.use(express.json()); // Parsowanie danych jako JSON
+// app.use(helmet()); // Dodanie zabezpieczeń Helmet
+// app.use(
+//   cors({
+//     origin: process.env.REACT_APP_BACKEND_URL,
+//     methods: ['GET', 'POST'], // Dozwolone metody
+//     allowedHeaders: ['Content-Type', 'Authorization'], // Dozwolone nagłówki
+//   })
+// );
+// app.options('/addTask', cors());
+// app.options('/register', cors());
+// app.options('/odbierzDane', cors());
+// app.options('/test', cors());
 
-app.options("/register", (req, res) => {
-  res.header("Access-Control-Allow-Origin", allowedOrigin);
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.send();
-});
+// app.options("/register", (req, res) => {
+//   res.header("Access-Control-Allow-Origin", allowedOrigin);
+//   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   res.send();
+// });
 
-app.options("/odbierzDane", (req, res) => {
-  res.header("Access-Control-Allow-Origin", allowedOrigin);
-  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.send();
-});
-app.post("/odbierzDane", (req, res) => {
-  const receivedData = req.body.data;
-  console.log("Otrzymane dane:", receivedData);
+// app.options("/odbierzDane", (req, res) => {
+//   res.header("Access-Control-Allow-Origin", allowedOrigin);
+//   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+//   res.send();
+// });
+// app.post("/odbierzDane", (req, res) => {
+//   const receivedData = req.body.data;
+//   console.log("Otrzymane dane:", receivedData);
 
-  const responseMessage = "Dane odebrane pomyślnie";
-  res.status(200).json({ message: responseMessage });
-});
+//   const responseMessage = "Dane odebrane pomyślnie";
+//   res.status(200).json({ message: responseMessage });
+// });
 
 // Obsługa proxy dla zewnętrznego zasobu - tu jest poprawka
 // const proxy = httpProxy.createProxyServer();
@@ -119,26 +119,26 @@ app.post("/odbierzDane", (req, res) => {
 // app.use('/test', (req, res) => {
 //   proxy.web(req, res, { target: 'http:/localhost:3000' });
 // });
-app.get('/test', (req, res) => {
-	const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
+// app.get('/test', (req, res) => {
+// 	const testUrl = 'https://sprightly-tulumba-2baacf.netlify.app';
 
-	// Wykonaj żądanie GET za pomocą modułu http
-	http.get(testUrl, (response) => {
-		let data = '';
+// 	// Wykonaj żądanie GET za pomocą modułu http
+// 	http.get(testUrl, (response) => {
+// 		let data = '';
 
-		response.on('data', (chunk) => {
-			data += chunk;
-		});
+// 		response.on('data', (chunk) => {
+// 			data += chunk;
+// 		});
 
-		response.on('end', () => {
-			console.log('Odpowiedź z serwera testUrl:', data);
-			res.send(data); // Odeślij odpowiedź do klienta Express
-		});
-	}).on('error', (error) => {
-		console.error('Błąd podczas połączenia z testUrl:', error);
-		res.status(500).send('Błąd podczas pobierania danych'); // Odeślij błąd do klienta Express
-	});
-});
+// 		response.on('end', () => {
+// 			console.log('Odpowiedź z serwera testUrl:', data);
+// 			res.send(data); // Odeślij odpowiedź do klienta Express
+// 		});
+// 	}).on('error', (error) => {
+// 		console.error('Błąd podczas połączenia z testUrl:', error);
+// 		res.status(500).send('Błąd podczas pobierania danych'); // Odeślij błąd do klienta Express
+// 	});
+// });
 // app.use(
 // 	'/proxy',
 // 	createProxyMiddleware({
@@ -505,22 +505,22 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 app.use(helmet());
 app.use(express.json());
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', allowedOrigin); // Zmodyfikuj na właściwy adres Twojego localhost
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', true);
+// app.use((req, res, next) => {
+//     res.setHeader('Access-Control-Allow-Origin', allowedOrigin); // Zmodyfikuj na właściwy adres Twojego localhost
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//     res.setHeader('Access-Control-Allow-Credentials', true);
   
-    if (req.method === 'OPTIONS') {
-      res.sendStatus(200); // Odpowiedź 200 na żądania OPTIONS
-    } else {
-      next(); // Przejdź do kolejnego middleware'u dla innych rodzajów żądań
-    }
-  });
-  app.use('/api', createProxyMiddleware({ 
-	target: process.env.REACT_APP_BACKEND_URL, 
-	changeOrigin: true,
-  }));
+//     if (req.method === 'OPTIONS') {
+//       res.sendStatus(200); // Odpowiedź 200 na żądania OPTIONS
+//     } else {
+//       next(); // Przejdź do kolejnego middleware'u dla innych rodzajów żądań
+//     }
+//   });
+//   app.use('/api', createProxyMiddleware({ 
+// 	target: process.env.REACT_APP_BACKEND_URL, 
+// 	changeOrigin: true,
+//   }));
   app.post('/register', (req, res) => {
     const { username, password, email } = req.body;
   
