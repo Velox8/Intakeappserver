@@ -27,31 +27,47 @@ const httpProxy = require("http-proxy");
 
 
 
-function customCors(req, res, next) {
-    // Adres, z którego chcesz zezwolić na żądania (możesz zmienić ten adres)
-    const allowedOrigin = 'https://sprightly-tulumba-2baacf.netlify.app';
 
-    // Sprawdź, czy żądanie pochodzi z dozwolonego adresu
+
+app.use(helmet());
+app.use(express.json());
+
+function customCors(req, res, next) {
+    const allowedOrigin = 'https://sprightly-tulumba-2baacf.netlify.app';
     const requestOrigin = req.headers.origin;
+
     if (requestOrigin === allowedOrigin) {
         res.setHeader('Access-Control-Allow-Origin', requestOrigin);
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     }
 
-    // Obsługa żądań OPTIONS (preflight requests)
     if (req.method === 'OPTIONS') {
         res.writeHead(200);
         res.end();
         return;
     }
 
-    next(); // Kontynuuj przetwarzanie żądania
+    next();
 }
 
 // Użycie naszego własnego middleware CORS
 app.use(customCors);
+app.post('/register', (req, res) => {
+    const { username, password, email } = req.body;
 
+    const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '1h' });
+
+    const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
+    db.query(sql, [username, password, email, token], (err, result) => {
+        if (err) {
+            console.error('Błąd podczas rejestracji użytkownika:', err);
+            return res.status(500).json({ message: 'Błąd podczas rejestracji użytkownika.' });
+        }
+        console.log('Użytkownik został zarejestrowany:', { username, email });
+        res.status(201).json({ message: 'Użytkownik został zarejestrowany.', token });
+    });
+});
 
 
 
@@ -503,8 +519,7 @@ db.query(createProductsTableQuery, (err, result) => {
 // });
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-app.use(helmet());
-app.use(express.json());
+
 // app.use((req, res, next) => {
 //     res.setHeader('Access-Control-Allow-Origin', allowedOrigin); // Zmodyfikuj na właściwy adres Twojego localhost
 //     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -521,25 +536,25 @@ app.use(express.json());
 // 	target: process.env.REACT_APP_BACKEND_URL, 
 // 	changeOrigin: true,
 //   }));
-  app.post('/register', (req, res) => {
-    const { username, password, email } = req.body;
+//   app.post('/register', (req, res) => {
+//     const { username, password, email } = req.body;
   
-    const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '1h' });
+//     const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '1h' });
   
-    const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
-    db.query(sql, [username, password, email, token], (err, result) => {
-      if (err) {
-        console.error('Błąd podczas rejestracji użytkownika:', err);
-        return res
-          .status(500)
-          .json({ message: 'Błąd podczas rejestracji użytkownika.' });
-      }
-      console.log('Użytkownik został zarejestrowany:', { username, email });
-      res
-        .status(201)
-        .json({ message: 'Użytkownik został zarejestrowany.', token });
-    });
-  });
+//     const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
+//     db.query(sql, [username, password, email, token], (err, result) => {
+//       if (err) {
+//         console.error('Błąd podczas rejestracji użytkownika:', err);
+//         return res
+//           .status(500)
+//           .json({ message: 'Błąd podczas rejestracji użytkownika.' });
+//       }
+//       console.log('Użytkownik został zarejestrowany:', { username, email });
+//       res
+//         .status(201)
+//         .json({ message: 'Użytkownik został zarejestrowany.', token });
+//     });
+//   });
 // Endpoint logowania użytkownika
 app.post('/login', (req, res) => {
 	const { username, password } = req.body;
