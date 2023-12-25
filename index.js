@@ -32,6 +32,11 @@ const httpProxy = require("http-proxy");
 app.use(helmet());
 app.use(express.json());
 
+app.use(cors({
+	origin: process.env.REACT_APP_BACKEND_URL,
+	methods: ['GET', 'POST', 'OPTIONS'],
+	allowedHeaders: ['Content-Type', 'Authorization']
+  }));
 function customCors(req, res, next) {
     const allowedOrigin = process.env.REACT_APP_BACKEND_URL;
     const requestOrigin = req.headers.origin;
