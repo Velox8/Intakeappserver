@@ -9,7 +9,7 @@ const express = require("express");
 const app = express();
 const http = require("https");
 const httpProxy = require("http-proxy");
-app.use(cors());
+// app.use(cors());
 
 
 app.use(express.json()); // Parsowanie danych jako JSON
@@ -17,26 +17,26 @@ app.use(helmet());
 
 
 
-app.use(cors({
-	origin: ["https://sprightly-tulumba-2baacf.netlify.app"], 
-  }));
-  app.options('/register', cors());
-  app.options('/login', cors());
-  app.options('/test', cors());
-  app.options('/addTask', cors());
-  app.options('/odbierzDane', cors());
-  app.use((req, res, next) => {
-	  res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
-	  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-	  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-	  res.setHeader('Access-Control-Allow-Credentials', true);
+// app.use(cors({
+// 	origin: ["https://sprightly-tulumba-2baacf.netlify.app"], 
+//   }));
+//   app.options('/register', cors());
+//   app.options('/login', cors());
+//   app.options('/test', cors());
+//   app.options('/addTask', cors());
+//   app.options('/odbierzDane', cors());
+//   app.use((req, res, next) => {
+// 	  res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
+// 	  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+// 	  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+// 	  res.setHeader('Access-Control-Allow-Credentials', true);
   
-	  if (req.method === 'OPTIONS') { 
-		  res.sendStatus(200);
-	  } else { 
-		  next();
-	  }
-  });
+// 	  if (req.method === 'OPTIONS') { 
+// 		  res.sendStatus(200);
+// 	  } else { 
+// 		  next();
+// 	  }
+//   });
 
 
 
@@ -64,6 +64,13 @@ app.use(cors({
 
 // // Użycie naszego własnego middleware CORS
 // app.use(customCors);
+
+app.use((req, res, next) => {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+	next();
+ }) 
 const db = mysql.createConnection({
 	host: 'viaduct.proxy.rlwy.net', 
 	port: 47341,
@@ -259,12 +266,12 @@ db.query(createProductsTableQuery, (err, result) => {
 		console.log('Tabela products utworzona pomyślnie.');
 	}
 });
-const corsOptions = {
-	origin: 'https://sprightly-tulumba-2baacf.netlify.app',
-	methods: 'POST',
-	allowedHeaders: ['Content-Type', 'Authorization'],
-  };
-app.post('/register', cors(corsOptions), (req, res) => {
+// const corsOptions = {
+// 	origin: 'https://sprightly-tulumba-2baacf.netlify.app',
+// 	methods: 'POST',
+// 	allowedHeaders: ['Content-Type', 'Authorization'],
+//   };
+app.post('/register', (req, res) => {
     const { username, password, email } = req.body;
   
     const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '1h' });
