@@ -23,7 +23,10 @@ const httpProxy = require("http-proxy");
 // });
 const port = process.env.PORT || 3000; 
 
+app.use(cors());
 
+// app.use(express.json());
+app.use(helmet());
 
 
 
