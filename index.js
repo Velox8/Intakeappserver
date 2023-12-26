@@ -374,44 +374,44 @@ app.get('/allTasks/:username', (req, res) => {
 // 	});
 // });
 
-// app.post('/login', (req, res) => {
-// 	const { username, password } = req.body;
+app.post('/login', (req, res) => {
+	const { username, password } = req.body;
 
-// 	const sql = `SELECT * FROM users WHERE username = ? AND password = ?`;
-// 	db.query(sql, [username, password], (err, results) => {
-// 		if (err) {
-// 			console.error('Błąd podczas logowania:', err);
-// 			return res.status(500).json({ message: 'Błąd logowania.' });
-// 		}
+	const sql = `SELECT * FROM users WHERE username = ? AND password = ?`;
+	db.query(sql, [username, password], (err, results) => {
+		if (err) {
+			console.error('Błąd podczas logowania:', err);
+			return res.status(500).json({ message: 'Błąd logowania.' });
+		}
 
-// 		if (results.length === 0) {
-// 			return res.status(401).json({ message: 'Nieprawidłowe dane logowania.' });
-// 		}
+		if (results.length === 0) {
+			return res.status(401).json({ message: 'Nieprawidłowe dane logowania.' });
+		}
 
-// 		const row = results[0];
-// 		const payload = {
-// 			username: row.username,
-// 			email: row.email,
-// 		};
-// 		const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
+		const row = results[0];
+		const payload = {
+			username: row.username,
+			email: row.email,
+		};
+		const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
 
-// 		const updateTokenQuery = `UPDATE users SET token = ? WHERE id = ?`;
-// 		db.query(updateTokenQuery, [token, row.id], (err, result) => {
-// 			if (err) {
-// 				console.error('Błąd podczas aktualizacji tokenu:', err);
-// 				return res.status(500).json({ message: 'Błąd logowania.' });
-// 			}
+		const updateTokenQuery = `UPDATE users SET token = ? WHERE id = ?`;
+		db.query(updateTokenQuery, [token, row.id], (err, result) => {
+			if (err) {
+				console.error('Błąd podczas aktualizacji tokenu:', err);
+				return res.status(500).json({ message: 'Błąd logowania.' });
+			}
 
-// 			console.log('Użytkownik zalogowany:', {
-// 				username: row.username,
-// 				email: row.email,
-// 			});
-// 			res
-// 				.status(200)
-// 				.json({ message: 'Zalogowano użytkownika.', token: token });
-// 		});
-// 	});
-// });
+			console.log('Użytkownik zalogowany:', {
+				username: row.username,
+				email: row.email,
+			});
+			res
+				.status(200)
+				.json({ message: 'Zalogowano użytkownika.', token: token });
+		});
+	});
+});
 const crypto = require('crypto');
 const { create } = require('domain');
 
