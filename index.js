@@ -576,7 +576,7 @@ app.post('/login', (req, res) => {
 			console.log('Użytkownik zalogowany:', { username, email: row.email });
 			res.status(200).json({ message: 'Zalogowano użytkownika.', token });
 		});
-	});
+	}); 
 });
 
 // Endpoint dodawania zadań przez użytkownika
