@@ -9,7 +9,7 @@ const express = require("express");
 const app = express();
 const http = require("https");
 const httpProxy = require("http-proxy");
-
+app.use(cors());
 
 
 app.use(express.json()); // Parsowanie danych jako JSON
