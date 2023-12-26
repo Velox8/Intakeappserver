@@ -259,7 +259,12 @@ db.query(createProductsTableQuery, (err, result) => {
 		console.log('Tabela products utworzona pomyślnie.');
 	}
 });
-app.post('/register', (req, res) => {
+const corsOptions = {
+	origin: 'https://sprightly-tulumba-2baacf.netlify.app',
+	methods: 'POST',
+	allowedHeaders: ['Content-Type', 'Authorization'],
+  };
+app.post('/register', cors(corsOptions), (req, res) => {
     const { username, password, email } = req.body;
   
     const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '1h' });
