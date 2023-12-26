@@ -14,6 +14,11 @@ app.use(cors());
 app.use(express.json()); // Parsowanie danych jako JSON
 app.use(helmet());
 
+
+
+
+const port = process.env.PORT || 3000;
+
 // app.use(cors({
 // 	origin: ["https://sprightly-tulumba-2baacf.netlify.app"],
 //   }));
@@ -388,7 +393,11 @@ app.post('/addTask', (req, res) => {
 	res.status(201).json({ message: 'Zadania zostały dodane.' });
 });
 
-const PORT = 5000;
-app.listen(PORT, () => {
-	console.log(`Serwer działa na porcie ${PORT}`);
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server is running on port ${port}`);
 });
