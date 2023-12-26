@@ -1,24 +1,21 @@
-const dotenv = require("dotenv");
+const dotenv = require('dotenv');
 dotenv.config();
 
-const mysql = require("mysql2");
-const cors = require("cors");
-const helmet = require("helmet");
-const jwt = require("jsonwebtoken");
-const express = require("express");
+const mysql = require('mysql2');
+const cors = require('cors');
+const helmet = require('helmet');
+const jwt = require('jsonwebtoken');
+const express = require('express');
 const app = express();
-const http = require("https");
-const httpProxy = require("http-proxy");
+const http = require('https');
+const httpProxy = require('http-proxy');
 // app.use(cors());
-
 
 app.use(express.json()); // Parsowanie danych jako JSON
 app.use(helmet());
 
-
-
 // app.use(cors({
-// 	origin: ["https://sprightly-tulumba-2baacf.netlify.app"], 
+// 	origin: ["https://sprightly-tulumba-2baacf.netlify.app"],
 //   }));
 //   app.options('/register', cors());
 //   app.options('/login', cors());
@@ -30,15 +27,13 @@ app.use(helmet());
 // 	  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 // 	  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 // 	  res.setHeader('Access-Control-Allow-Credentials', true);
-  
-// 	  if (req.method === 'OPTIONS') { 
+
+// 	  if (req.method === 'OPTIONS') {
 // 		  res.sendStatus(200);
-// 	  } else { 
+// 	  } else {
 // 		  next();
 // 	  }
 //   });
-
-
 
 // function customCors(req, res, next) {
 //     // Adres, z którego chcesz zezwolić na żądania (możesz zmienić ten adres)
@@ -66,13 +61,19 @@ app.use(helmet());
 // app.use(customCors);
 
 app.use((req, res, next) => {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-	res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+	res.header(
+		'Access-Control-Allow-Origin',
+		'https://sprightly-tulumba-2baacf.netlify.app'
+	);
+	res.header(
+		'Access-Control-Allow-Headers',
+		'Origin, X-Requested-With, Content-Type, Accept'
+	);
+	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 	next();
- }) 
+});
 const db = mysql.createConnection({
-	host: 'viaduct.proxy.rlwy.net', 
+	host: 'viaduct.proxy.rlwy.net',
 	port: 47341,
 	user: 'root',
 	password: '4G2BdHHBfC3B214AcBb4cCC4hdD66h1C',
@@ -80,21 +81,21 @@ const db = mysql.createConnection({
 });
 db.connect((err) => {
 	if (err) {
-	  console.error('Błąd podczas nawiązywania połączenia z bazą danych:', err);
-	  return;
+		console.error('Błąd podczas nawiązywania połączenia z bazą danych:', err);
+		return;
 	}
 	console.log('Połączono z bazą danych MySQL!');
-  
+
 	const setGlobalQuery = 'SET GLOBAL host_cache_size=0';
 	db.query(setGlobalQuery, (err, results) => {
-	  if (err) {
-		console.error('Błąd podczas wykonywania polecenia SET GLOBAL:', err);
-		return;
-	  }
-  
-	  console.log('Pomyślnie wykonano polecenie SET GLOBAL host_cache_size=0');
+		if (err) {
+			console.error('Błąd podczas wykonywania polecenia SET GLOBAL:', err);
+			return;
+		}
+
+		console.log('Pomyślnie wykonano polecenie SET GLOBAL host_cache_size=0');
 	});
-  });
+});
 app.get('/getProducts/:username', (req, res) => {
 	const username = req.params.username;
 	const userToken = req.headers.authorization.split(' ')[1];
@@ -163,8 +164,6 @@ db.connect((err) => {
 	}
 });
 
-
-
 app.get('/allTasks/:username', (req, res) => {
 	const username = req.params.username;
 	const userToken = req.headers.authorization.split(' ')[1];
@@ -197,8 +196,6 @@ app.get('/allTasks/:username', (req, res) => {
 		res.status(401).json({ message: 'Unauthorized' });
 	}
 });
-
-
 
 const crypto = require('crypto');
 const { create } = require('domain');
@@ -272,24 +269,24 @@ db.query(createProductsTableQuery, (err, result) => {
 // 	allowedHeaders: ['Content-Type', 'Authorization'],
 //   };
 app.post('/register', (req, res) => {
-    const { username, password, email } = req.body;
-  
-    const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '1h' });
-  
-    const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
-    db.query(sql, [username, password, email, token], (err, result) => {
-      if (err) {
-        console.error('Błąd podczas rejestracji użytkownika:', err);
-        return res
-          .status(500)
-          .json({ message: 'Błąd podczas rejestracji użytkownika.' });
-      }
-      console.log('Użytkownik został zarejestrowany:', { username, email });
-      res
-        .status(201)
-        .json({ message: 'Użytkownik został zarejestrowany.', token });
-    });
-  });
+	const { username, password, email } = req.body;
+
+	const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '1h' });
+
+	const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
+	db.query(sql, [username, password, email, token], (err, result) => {
+		if (err) {
+			console.error('Błąd podczas rejestracji użytkownika:', err);
+			return res
+				.status(500)
+				.json({ message: 'Błąd podczas rejestracji użytkownika.' });
+		}
+		console.log('Użytkownik został zarejestrowany:', { username, email });
+		res
+			.status(201)
+			.json({ message: 'Użytkownik został zarejestrowany.', token });
+	});
+});
 // Endpoint logowania użytkownika
 app.post('/login', (req, res) => {
 	const { username, password } = req.body;
@@ -390,9 +387,6 @@ app.post('/addTask', (req, res) => {
 
 	res.status(201).json({ message: 'Zadania zostały dodane.' });
 });
-
-
-
 
 const PORT = 5000;
 app.listen(PORT, () => {
