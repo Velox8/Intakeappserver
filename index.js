@@ -553,7 +553,7 @@ app.post('/login', (req, res) => {
 	console.log('Updated token:', token); // Dodaj log zaktualizowanego tokenu
 
 	const sql = `SELECT * FROM users WHERE username = ? AND password = ?`;
-	db.get(sql, [username, password], (err, row) => {
+	db.query(sql, [username, password], (err, row) => {
 		if (err) {
 			console.error('Błąd podczas logowania:', err);
 			return res.status(500).json({ message: 'Błąd logowania.' });
@@ -568,7 +568,7 @@ app.post('/login', (req, res) => {
 		});
 
 		const updateTokenQuery = `UPDATE users SET token = ? WHERE id = ?`;
-		db.run(updateTokenQuery, [token, row.id], (err) => {
+		db.query(updateTokenQuery, [token, row.id], (err) => {
 			if (err) {
 				console.error('Błąd podczas aktualizacji tokenu:', err);
 				return res.status(500).json({ message: 'Błąd logowania.' });
