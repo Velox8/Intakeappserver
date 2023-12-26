@@ -613,7 +613,7 @@ app.post('/addTask', (req, res) => {
 		} = task;
 
 		const sql = `INSERT INTO tasks (username, name, category, date, grams, calories, proteins, productWholeCalories) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-		db.run(
+		db.query(
 			sql,
 			[
 				username,
