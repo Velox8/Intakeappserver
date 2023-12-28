@@ -641,7 +641,7 @@ app.post('/addTask', (req, res) => {
 });
 app.post('/updateTasks', (req, res) => {
     // let editedTasks = req.body.editedTasks; // Dane przesłane z przeglądarki
-	const { editedTask } = req.body;
+	const { s } = req.body;
     const userToken = req.headers.authorization;
 	console.log(req.body)
 	if (typeof editedTask !== 'undefined') {
