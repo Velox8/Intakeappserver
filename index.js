@@ -640,7 +640,8 @@ app.post('/addTask', (req, res) => {
 	res.status(201).json({ message: 'Zadania zostały dodane.' });
 });
 app.post('/updateTasks', (req, res) => {
-    let editedTasks = req.body.editedTasks; // Dane przesłane z przeglądarki
+    // let editedTasks = req.body.editedTasks; // Dane przesłane z przeglądarki
+	const { editedTask } = req.body;
     const userToken = req.headers.authorization;
 	console.log(editedTasks)
 	if (typeof editedTask !== 'undefined') {
