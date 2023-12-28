@@ -640,30 +640,35 @@ app.post('/addTask', (req, res) => {
 	res.status(201).json({ message: 'Zadania zostały dodane.' });
 });
 app.post('/updateTasks', (req, res) => {
-    const { editedTasks } = req.body; // Dane przesłane z przeglądarki
-	const userToken = req.headers.authorization;
+    let editedTasks = req.body.editedTasks; // Dane przesłane z przeglądarki
+    const userToken = req.headers.authorization;
 
-	console.log('Received user token:', userToken); // Console log otrzymanego tokenu
+    console.log('Received user token:', userToken); // Console log otrzymanego tokenu
 
-	// Funkcja sprawdzająca poprawność tokenu JWT
-	function userTokenIsValid(token) {
-		try {
-			const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
-			console.log('Decoded token:', decoded); // Console log zdekodowanego tokenu
-			return decoded;
-		} catch (err) {
-			return false;
-		}
-	}
-	if (!userTokenIsValid(userToken)) {
-		return res.status(401).json({ message: 'Brak autoryzacji.' });
-	}
+    // Funkcja sprawdzająca poprawność tokenu JWT
+    function userTokenIsValid(token) {
+        try {
+            const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
+            console.log('Decoded token:', decoded); // Console log zdekodowanego tokenu
+            return decoded;
+        } catch (err) {
+            return false;
+        }
+    }
 
+    if (!userTokenIsValid(userToken)) {
+        return res.status(401).json({ message: 'Brak autoryzacji.' });
+    }
+
+    // Jeśli nie jest to tablica, zamień na tablicę
+    if (!Array.isArray(editedTasks)) {
+        editedTasks = [editedTasks];
+    }
 
     // Iteracja przez każde zadanie w editedTasks
     editedTasks.forEach((editedTask) => {
         const {
-            
+            id,
             username,
             name,
             category,
@@ -674,7 +679,7 @@ app.post('/updateTasks', (req, res) => {
             productWholeCalories,
         } = editedTask;
 
-        const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=?`;
+        const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=? WHERE id=?`;
         db.query(
             sql,
             [
@@ -686,7 +691,7 @@ app.post('/updateTasks', (req, res) => {
                 calories,
                 proteins,
                 productWholeCalories,
-              
+                id,
             ],
             (err) => {
                 if (err) {
@@ -701,8 +706,6 @@ app.post('/updateTasks', (req, res) => {
 
     res.status(200).json({ message: 'Zadania zostały zaktualizowane.' });
 });
-
-
 app.get('/', (req, res) => {
 	res.send('Hello World!');
   });
