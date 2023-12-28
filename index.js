@@ -1,62 +1,60 @@
-const dotenv = require("dotenv");
+const dotenv = require('dotenv');
 dotenv.config();
 
-const mysql = require("mysql2");
-const cors = require("cors");
-const helmet = require("helmet");
-const jwt = require("jsonwebtoken");
-const express = require("express");
+const mysql = require('mysql2');
+const cors = require('cors');
+const helmet = require('helmet');
+const jwt = require('jsonwebtoken');
+const express = require('express');
 const app = express();
-const http = require("https");
-const httpProxy = require("http-proxy");
+const http = require('https');
+const httpProxy = require('http-proxy');
 // app.use((req, res, next) => {
 //     res.setHeader('Access-Control-Allow-Origin', 'https://sprightly-tulumba-2baacf.netlify.app');
 //     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 //     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 //     res.setHeader('Access-Control-Allow-Credentials', true);
 
-//     if (req.method === 'OPTIONS') { 
+//     if (req.method === 'OPTIONS') {
 //         res.sendStatus(200);
-//     } else { 
+//     } else {
 //         next();
 //     }
 // });
-const port = process.env.PORT || 3000; 
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 
 app.use(express.json());
 app.use(helmet());
 
-
-
 function customCors(req, res, next) {
-    // Adres, z którego chcesz zezwolić na żądania (możesz zmienić ten adres)
-    const allowedOrigin = 'https://sprightly-tulumba-2baacf.netlify.app';
+	// Adres, z którego chcesz zezwolić na żądania (możesz zmienić ten adres)
+	const allowedOrigin = 'https://sprightly-tulumba-2baacf.netlify.app';
 
-    // Sprawdź, czy żądanie pochodzi z dozwolonego adresu
-    const requestOrigin = req.headers.origin;
-    if (requestOrigin === allowedOrigin) {
-        res.setHeader('Access-Control-Allow-Origin', requestOrigin);
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    }
+	// Sprawdź, czy żądanie pochodzi z dozwolonego adresu
+	const requestOrigin = req.headers.origin;
+	if (requestOrigin === allowedOrigin) {
+		res.setHeader('Access-Control-Allow-Origin', requestOrigin);
+		res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+		res.setHeader(
+			'Access-Control-Allow-Headers',
+			'Content-Type, Authorization'
+		);
+	}
 
-    // Obsługa żądań OPTIONS (preflight requests)
-    if (req.method === 'OPTIONS') {
-        res.writeHead(200);
-        res.end();
-        return;
-    }
+	// Obsługa żądań OPTIONS (preflight requests)
+	if (req.method === 'OPTIONS') {
+		res.writeHead(200);
+		res.end();
+		return;
+	}
 
-    next(); // Kontynuuj przetwarzanie żądania
+	next(); // Kontynuuj przetwarzanie żądania
 }
 
 // Użycie naszego własnego middleware CORS
 app.use(customCors);
-
-
-
 
 // const allowedOrigin = process.env.REACT_APP_BACKEND_URL
 
@@ -186,21 +184,21 @@ const db = mysql.createConnection({
 });
 db.connect((err) => {
 	if (err) {
-	  console.error('Błąd podczas nawiązywania połączenia z bazą danych:', err);
-	  return;
+		console.error('Błąd podczas nawiązywania połączenia z bazą danych:', err);
+		return;
 	}
 	console.log('Połączono z bazą danych MySQL!');
-  
+
 	const setGlobalQuery = 'SET GLOBAL host_cache_size=0';
 	db.query(setGlobalQuery, (err, results) => {
-	  if (err) {
-		console.error('Błąd podczas wykonywania polecenia SET GLOBAL:', err);
-		return;
-	  }
-  
-	  console.log('Pomyślnie wykonano polecenie SET GLOBAL host_cache_size=0');
+		if (err) {
+			console.error('Błąd podczas wykonywania polecenia SET GLOBAL:', err);
+			return;
+		}
+
+		console.log('Pomyślnie wykonano polecenie SET GLOBAL host_cache_size=0');
 	});
-  });
+});
 // app.get('/test', async (req, res) => {
 // 	try {
 // 		const testUrl = 'https://maksymalnytrener.pl/';
@@ -315,7 +313,6 @@ db.connect((err) => {
 		console.log('Połączenie z bazą danych MySQL udane!');
 	}
 });
-
 
 app.get('/allTasks/:username', (req, res) => {
 	const username = req.params.username;
@@ -509,36 +506,36 @@ app.use(express.json());
 //     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 //     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 //     res.setHeader('Access-Control-Allow-Credentials', true);
-  
+
 //     if (req.method === 'OPTIONS') {
 //       res.sendStatus(200); // Odpowiedź 200 na żądania OPTIONS
 //     } else {
 //       next(); // Przejdź do kolejnego middleware'u dla innych rodzajów żądań
 //     }
 //   });
-//   app.use('/api', createProxyMiddleware({ 
-// 	target: process.env.REACT_APP_BACKEND_URL, 
+//   app.use('/api', createProxyMiddleware({
+// 	target: process.env.REACT_APP_BACKEND_URL,
 // 	changeOrigin: true,
 //   }));
-  app.post('/register', (req, res) => {
-    const { username, password, email } = req.body;
-  
-    const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '1h' });
-  
-    const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
-    db.query(sql, [username, password, email, token], (err, result) => {
-      if (err) {
-        console.error('Błąd podczas rejestracji użytkownika:', err);
-        return res
-          .status(500)
-          .json({ message: 'Błąd podczas rejestracji użytkownika.' });
-      }
-      console.log('Użytkownik został zarejestrowany:', { username, email });
-      res
-        .status(201)
-        .json({ message: 'Użytkownik został zarejestrowany.', token });
-    });
-  });
+app.post('/register', (req, res) => {
+	const { username, password, email } = req.body;
+
+	const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '1h' });
+
+	const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
+	db.query(sql, [username, password, email, token], (err, result) => {
+		if (err) {
+			console.error('Błąd podczas rejestracji użytkownika:', err);
+			return res
+				.status(500)
+				.json({ message: 'Błąd podczas rejestracji użytkownika.' });
+		}
+		console.log('Użytkownik został zarejestrowany:', { username, email });
+		res
+			.status(201)
+			.json({ message: 'Użytkownik został zarejestrowany.', token });
+	});
+});
 // Endpoint logowania użytkownika
 app.post('/login', (req, res) => {
 	const { username, password } = req.body;
@@ -576,7 +573,7 @@ app.post('/login', (req, res) => {
 			console.log('Użytkownik zalogowany:', { username, email: row.email });
 			res.status(200).json({ message: 'Zalogowano użytkownika.', token });
 		});
-	}); 
+	});
 });
 
 // Endpoint dodawania zadań przez użytkownika
@@ -640,79 +637,77 @@ app.post('/addTask', (req, res) => {
 	res.status(201).json({ message: 'Zadania zostały dodane.' });
 });
 app.post('/updateTasks/:username', (req, res) => {
-    let { editedTasks } = req.body;
-    const userToken = req.headers.authorization;
+	let { editedTasks } = req.body;
+	const userToken = req.headers.authorization;
 
-    const editedTaskUsername = req.params.username; // Zmiana nazwy na unikatową
+	const editedTaskUsername = req.params.username; // Zmiana nazwy na unikatową
 
-    console.log(req.body);
-    if (typeof editedTasks !== 'undefined') {
-        // Wykonaj kod, który używa zmiennej editedTasks
-    } else {
-        console.log('editedTasks jest niezdefiniowane');
-    }
-    console.log('Received user token:', userToken); 
+	console.log(req.body);
+	if (typeof editedTasks !== 'undefined') {
+		// Wykonaj kod, który używa zmiennej editedTasks
+	} else {
+		console.log('editedTasks jest niezdefiniowane');
+	}
+	console.log('Received user token:', userToken);
 
-    function userTokenIsValid(token) {
-        try {
-            const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
-            console.log('Decoded token:', decoded); 
-            return decoded;
-        } catch (err) {
-            return false;
-        }
-    }
+	function userTokenIsValid(token) {
+		try {
+			const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
+			console.log('Decoded token:', decoded);
+			return decoded;
+		} catch (err) {
+			return false;
+		}
+	}
 
-    if (!userTokenIsValid(userToken)) {
-        return res.status(401).json({ message: 'Brak autoryzacji.' });
-    }
+	if (!userTokenIsValid(userToken)) {
+		return res.status(401).json({ message: 'Brak autoryzacji.' });
+	}
 
-   
+	editedTasks.forEach((editedTask) => {
+		const {
+			name,
+			category,
+			date,
+			grams,
+			calories,
+			proteins,
+			productWholeCalories,
+			id,
+		} = editedTask;
 
-    editedTasks.forEach((editedTask) => {
-        const {
-            name,
-            category,
-            date,
-            grams,
-            calories,
-            proteins,
-            productWholeCalories,
-            id,
-        } = editedTask;
+		console.log('Zadanie do aktualizacji:', { id });
+		console.log('Zadanie do aktualizacji:', { editedTaskUsername });
 
-        console.log('Zadanie do aktualizacji:', { id });
-        console.log('Zadanie do aktualizacji:', { editedTaskUsername });
+		const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, calories=?, proteins=?,  productWholeCalories=? WHERE id=?`;
+		db.query(
+			sql,
+			[
+				editedTaskUsername, // Zmiana na editedTaskUsername
+				name,
+				category,
+				date,
+				grams,
+				calories,
+				proteins,
+				productWholeCalories,
+				id,
+			],
+			(err) => {
+				if (err) {
+					console.error('Błąd podczas aktualizowania zadania:', err);
+				}
+				console.log('Zadanie zostało zaktualizowane:', { id });
+			}
+		);
+	});
 
-        const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=? WHERE id=?`;
-        db.query(
-            sql,
-            [
-                editedTaskUsername, // Zmiana na editedTaskUsername
-                name,
-                category,
-                date,
-                grams,
-                calories,
-                proteins,
-                productWholeCalories,
-                id,
-            ],
-            (err) => {
-                if (err) {
-                    console.error('Błąd podczas aktualizowania zadania:', err);
-                }
-                console.log('Zadanie zostało zaktualizowane:', { id });
-            }
-        );
-    });
-
-    res.status(200).json({ message: 'Zadania zostały zaktualizowane.' });
+	res.status(200).json({ message: 'Zadania zostały zaktualizowane.' });
 });
 app.get('/', (req, res) => {
 	res.send('Hello World!');
-  });
-  
-  app.listen(port, '0.0.0.0', () => {
+});
+
+app.listen(port, '0.0.0.0', () => {
 	console.log(`Server is running on port ${port}`);
-  });
+});
