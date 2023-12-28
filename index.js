@@ -640,7 +640,7 @@ app.post('/addTask', (req, res) => {
 	res.status(201).json({ message: 'Zadania zostały dodane.' });
 });
 app.post('/updateTasks', (req, res) => {
-    let editedTasks = req.body.editedTasks; // Dane przesłane z przeglądarki
+    const { editedTasks } = req.body; // Dane przesłane z przeglądarki
     const userToken = req.headers.authorization;
 
     console.log('Received user token:', userToken); // Console log otrzymanego tokenu
@@ -660,11 +660,6 @@ app.post('/updateTasks', (req, res) => {
         return res.status(401).json({ message: 'Brak autoryzacji.' });
     }
 
-    // Jeśli nie jest to tablica, zamień na tablicę
-    if (!Array.isArray(editedTasks)) {
-        editedTasks = [editedTasks];
-    }
-
     // Iteracja przez każde zadanie w editedTasks
     editedTasks.forEach((editedTask) => {
         const {
@@ -679,7 +674,11 @@ app.post('/updateTasks', (req, res) => {
             productWholeCalories,
         } = editedTask;
 
-        const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=? WHERE id=?`;
+        const sql = `
+            UPDATE tasks
+            SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=?
+            WHERE id=?
+        `;
         db.query(
             sql,
             [
@@ -696,8 +695,6 @@ app.post('/updateTasks', (req, res) => {
             (err) => {
                 if (err) {
                     console.error('Błąd podczas aktualizowania zadania:', err);
-                    // Jeśli chcesz przerwać działanie pętli w przypadku błędu, możesz zwrócić tutaj odpowiedź:
-                    // return res.status(500).json({ message: 'Błąd podczas aktualizowania zadania.' });
                 }
                 console.log('Zadanie zostało zaktualizowane:', { id });
             }
@@ -706,6 +703,7 @@ app.post('/updateTasks', (req, res) => {
 
     res.status(200).json({ message: 'Zadania zostały zaktualizowane.' });
 });
+
 app.get('/', (req, res) => {
 	res.send('Hello World!');
   });
