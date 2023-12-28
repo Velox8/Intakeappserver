@@ -667,9 +667,7 @@ app.post('/updateTasks/:username', (req, res) => {
         return res.status(401).json({ message: 'Brak autoryzacji.' });
     }
 
-    if (!Array.isArray(editedTasks)) {
-        editedTasks = [editedTasks];
-    }
+   
 
     editedTasks.forEach((editedTask) => {
         const {
