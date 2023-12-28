@@ -643,6 +643,11 @@ app.post('/updateTasks', (req, res) => {
     let editedTasks = req.body.editedTasks; // Dane przesłane z przeglądarki
     const userToken = req.headers.authorization;
 	console.log(editedTasks)
+	if (typeof editedTask !== 'undefined') {
+		// Tutaj wykonaj kod, który używa zmiennej editedTask
+	  } else {
+		console.log('editedTask jest niezdefiniowane');
+	  }
     console.log('Received user token:', userToken); // Console log otrzymanego tokenu
 
     // Funkcja sprawdzająca poprawność tokenu JWT
@@ -679,7 +684,10 @@ app.post('/updateTasks', (req, res) => {
             productWholeCalories,
 			id,
         } = editedTask;
+	
+	
 		console.log('Zadanie do aktualizacji:', { id })
+		console.log('Zadanie do aktualizacji:', { username })
         const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=? WHERE id=?`;
         db.query(
             sql,
