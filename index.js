@@ -639,23 +639,24 @@ app.post('/addTask', (req, res) => {
 
 	res.status(201).json({ message: 'Zadania zostały dodane.' });
 });
-app.post('/updateTasks', (req, res) => {
-    // let editedTasks = req.body.editedTasks; // Dane przesłane z przeglądarki
-	let{ editedTasks } = req.body;
+app.post('/updateTasks/:username', (req, res) => {
+    let { editedTasks } = req.body;
     const userToken = req.headers.authorization;
-	console.log(req.body)
-	if (typeof editedTasks !== 'undefined') {
-		// Tutaj wykonaj kod, który używa zmiennej editedTask
-	  } else {
-		console.log('editedTask jest niezdefiniowane');
-	  }
-    console.log('Received user token:', userToken); // Console log otrzymanego tokenu
 
-    // Funkcja sprawdzająca poprawność tokenu JWT
+    const editedTaskUsername = req.params.username; // Zmiana nazwy na unikatową
+
+    console.log(req.body);
+    if (typeof editedTasks !== 'undefined') {
+        // Wykonaj kod, który używa zmiennej editedTasks
+    } else {
+        console.log('editedTasks jest niezdefiniowane');
+    }
+    console.log('Received user token:', userToken); 
+
     function userTokenIsValid(token) {
         try {
             const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
-            console.log('Decoded token:', decoded); // Console log zdekodowanego tokenu
+            console.log('Decoded token:', decoded); 
             return decoded;
         } catch (err) {
             return false;
@@ -666,16 +667,12 @@ app.post('/updateTasks', (req, res) => {
         return res.status(401).json({ message: 'Brak autoryzacji.' });
     }
 
-    // Jeśli nie jest to tablica, zamień na tablicę
     if (!Array.isArray(editedTasks)) {
         editedTasks = [editedTasks];
     }
 
-    // Iteracja przez każde zadanie w editedTasks
     editedTasks.forEach((editedTask) => {
         const {
-            
-            username,
             name,
             category,
             date,
@@ -683,17 +680,17 @@ app.post('/updateTasks', (req, res) => {
             calories,
             proteins,
             productWholeCalories,
-			id,
+            id,
         } = editedTask;
-	
-	
-		console.log('Zadanie do aktualizacji:', { id })
-		console.log('Zadanie do aktualizacji:', { username })
+
+        console.log('Zadanie do aktualizacji:', { id });
+        console.log('Zadanie do aktualizacji:', { editedTaskUsername });
+
         const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=? WHERE id=?`;
         db.query(
             sql,
             [
-                username,
+                editedTaskUsername, // Zmiana na editedTaskUsername
                 name,
                 category,
                 date,
@@ -703,16 +700,12 @@ app.post('/updateTasks', (req, res) => {
                 productWholeCalories,
                 id,
             ],
-			
             (err) => {
                 if (err) {
                     console.error('Błąd podczas aktualizowania zadania:', err);
-                    // Jeśli chcesz przerwać działanie pętli w przypadku błędu, możesz zwrócić tutaj odpowiedź:
-                    // return res.status(500).json({ message: 'Błąd podczas aktualizowania zadania.' });
                 }
                 console.log('Zadanie zostało zaktualizowane:', { id });
             }
-			
         );
     });
 
