@@ -14,11 +14,8 @@ app.use(cors());
 app.use(express.json()); // Parsowanie danych jako JSON
 app.use(helmet());
 
+const port = process.env.PORT || 3000;
 
-
-
-const port = process.env.PORT || 3000; 
- 
 // app.use(cors({
 // 	origin: ["https://sprightly-tulumba-2baacf.netlify.app"],
 //   }));
@@ -413,65 +410,48 @@ app.post('/updateTasks', (req, res) => {
 	}
 	// Iteracja przez każde zadanie w editedTasks
 	editedTasks.forEach((editedTask) => {
-	  const {
-		id,
-		username,
-		name,
-		category,
-		proteins,
-		calories,
-		productWholeCalories,
-	
-	  } = editedTask;
-  
-	  const sql = `UPDATE tasks SET username=?, name=?, category=?, proteins=?, calories=?, productWholeCalories=? WHERE id=?`;
-	  db.query(
-		sql,
-		[username, name, category, proteins, calories, productWholeCalories, id],
-		(err) => {
-		  if (err) {
-			console.error('Błąd podczas aktualizowania zadania:', err);
-			// Jeśli chcesz przerwać działanie pętli w przypadku błędu, możesz zwrócić tutaj odpowiedź:
-			// return res.status(500).json({ message: 'Błąd podczas aktualizowania zadania.' });
-		  }
-		  console.log('Zadanie zostało zaktualizowane:', { id });
-		}
-	  );
+		const {
+			username,
+			name,
+			category,
+			date,
+			grams,
+			calories,
+			proteins,
+			productWholeCalories,
+		} = editedTask;
+
+		const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=?`;
+		db.query(
+			sql,
+			[
+				username,
+				name,
+				category,
+				date,
+				grams,
+				calories,
+				proteins,
+				productWholeCalories,
+			],
+			(err) => {
+				if (err) {
+					console.error('Błąd podczas aktualizowania zadania:', err);
+					// Jeśli chcesz przerwać działanie pętli w przypadku błędu, możesz zwrócić tutaj odpowiedź:
+					// return res.status(500).json({ message: 'Błąd podczas aktualizowania zadania.' });
+				}
+				console.log('Zadanie zostało zaktualizowane:', { id });
+			}
+		);
 	});
-  
+
 	res.status(200).json({ message: 'Zadania zostały zaktualizowane.' });
-  });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+});
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+	res.send('Hello World!');
 });
 
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Server is running on port ${port}`);
+	console.log(`Server is running on port ${port}`);
 });
