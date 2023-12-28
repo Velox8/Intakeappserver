@@ -641,10 +641,10 @@ app.post('/addTask', (req, res) => {
 });
 app.post('/updateTasks', (req, res) => {
     // let editedTasks = req.body.editedTasks; // Dane przesłane z przeglądarki
-	const { editedTasks } = req.body;
+	let{ editedTasks } = req.body;
     const userToken = req.headers.authorization;
 	console.log(req.body)
-	if (typeof editedTask !== 'undefined') {
+	if (typeof editedTasks !== 'undefined') {
 		// Tutaj wykonaj kod, który używa zmiennej editedTask
 	  } else {
 		console.log('editedTask jest niezdefiniowane');
