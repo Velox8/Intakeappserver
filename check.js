@@ -392,7 +392,55 @@ app.post('/addTask', (req, res) => {
 
 	res.status(201).json({ message: 'Zadania zostały dodane.' });
 });
+app.post('/updateTasks', (req, res) => {
+	const { editedTasks } = req.body; // Dane przesłane z przeglądarki
+	const userToken = req.headers.authorization;
 
+	console.log('Received user token:', userToken); // Console log otrzymanego tokenu
+
+	// Funkcja sprawdzająca poprawność tokenu JWT
+	function userTokenIsValid(token) {
+		try {
+			const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
+			console.log('Decoded token:', decoded); // Console log zdekodowanego tokenu
+			return decoded;
+		} catch (err) {
+			return false;
+		}
+	}
+	if (!userTokenIsValid(userToken)) {
+		return res.status(401).json({ message: 'Brak autoryzacji.' });
+	}
+	// Iteracja przez każde zadanie w editedTasks
+	editedTasks.forEach((editedTask) => {
+	  const {
+		id,
+		username,
+		name,
+		category,
+		proteins,
+		calories,
+		productWholeCalories,
+	
+	  } = editedTask;
+  
+	  const sql = `UPDATE tasks SET username=?, name=?, category=?, proteins=?, calories=?, productWholeCalories=? WHERE id=?`;
+	  db.query(
+		sql,
+		[username, name, category, proteins, calories, productWholeCalories, id],
+		(err) => {
+		  if (err) {
+			console.error('Błąd podczas aktualizowania zadania:', err);
+			// Jeśli chcesz przerwać działanie pętli w przypadku błędu, możesz zwrócić tutaj odpowiedź:
+			// return res.status(500).json({ message: 'Błąd podczas aktualizowania zadania.' });
+		  }
+		  console.log('Zadanie zostało zaktualizowane:', { id });
+		}
+	  );
+	});
+  
+	res.status(200).json({ message: 'Zadania zostały zaktualizowane.' });
+  });
 
 
 
