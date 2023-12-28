@@ -641,14 +641,23 @@ app.post('/addTask', (req, res) => {
 });
 app.post('/updateTasks', (req, res) => {
     const { editedTasks } = req.body; // Dane przesłane z przeglądarki
-    const userToken = req.headers.authorization;
+	const userToken = req.headers.authorization;
 
-    console.log('Received user token:', userToken); // Console log otrzymanego tokenu
+	console.log('Received user token:', userToken); // Console log otrzymanego tokenu
 
-    if (!userTokenIsValid(userToken)) {
-        return res.status(401).json({ message: 'Brak autoryzacji.' });
-    }
-
+	// Funkcja sprawdzająca poprawność tokenu JWT
+	function userTokenIsValid(token) {
+		try {
+			const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
+			console.log('Decoded token:', decoded); // Console log zdekodowanego tokenu
+			return decoded;
+		} catch (err) {
+			return false;
+		}
+	}
+	if (!userTokenIsValid(userToken)) {
+		return res.status(401).json({ message: 'Brak autoryzacji.' });
+	}
     // Iteracja przez każde zadanie w editedTasks
     editedTasks.forEach((editedTask) => {
         const {
