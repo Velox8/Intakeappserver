@@ -663,7 +663,7 @@ app.post('/updateTasks', (req, res) => {
     // Iteracja przez każde zadanie w editedTasks
     editedTasks.forEach((editedTask) => {
         const {
-            id,
+            
             username,
             name,
             category,
@@ -674,7 +674,7 @@ app.post('/updateTasks', (req, res) => {
             productWholeCalories,
         } = editedTask;
 
-        const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=? WHERE id=?`;
+        const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=?`;
         db.query(
             sql,
             [
@@ -686,7 +686,7 @@ app.post('/updateTasks', (req, res) => {
                 calories,
                 proteins,
                 productWholeCalories,
-                id,
+              
             ],
             (err) => {
                 if (err) {
