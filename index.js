@@ -639,43 +639,30 @@ app.post('/addTask', (req, res) => {
 
 	res.status(201).json({ message: 'Zadania zostały dodane.' });
 });
-app.post('/updateTasks', (req, res) => {
-    const { editedTasks } = req.body; // Dane przesłane z przeglądarki
-	const userToken = req.headers.authorization;
+app.post('/updateTasks', async (req, res) => {
+    const editedTasks = req.body; // Dane przesłane z przeglądarki
+    const userToken = req.headers.authorization;
 
-	console.log('Received user token:', userToken); // Console log otrzymanego tokenu
+    console.log('Received user token:', userToken); // Console log otrzymanego tokenu
 
-	// Funkcja sprawdzająca poprawność tokenu JWT
-	function userTokenIsValid(token) {
-		try {
-			const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
-			console.log('Decoded token:', decoded); // Console log zdekodowanego tokenu
-			return decoded;
-		} catch (err) {
-			return false;
-		}
-	}
-	if (!userTokenIsValid(userToken)) {
-		return res.status(401).json({ message: 'Brak autoryzacji.' });
-	}
-    // Iteracja przez każde zadanie w editedTasks
-    editedTasks.forEach((editedTask) => {
-        const {
-            id,
-            username,
-            name,
-            category,
-            date,
-            grams,
-            calories,
-            proteins,
-            productWholeCalories,
-        } = editedTask;
+    // Funkcja sprawdzająca poprawność tokenu JWT
+    function userTokenIsValid(token) {
+        try {
+            const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
+            console.log('Decoded token:', decoded); // Console log zdekodowanego tokenu
+            return decoded;
+        } catch (err) {
+            return false;
+        }
+    }
+    if (!userTokenIsValid(userToken)) {
+        return res.status(401).json({ message: 'Brak autoryzacji.' });
+    }
 
-        const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=? WHERE id=?`;
-        db.query(
-            sql,
-            [
+    try {
+        for (const editedTask of editedTasks) {
+            const {
+                id,
                 username,
                 name,
                 category,
@@ -684,20 +671,41 @@ app.post('/updateTasks', (req, res) => {
                 calories,
                 proteins,
                 productWholeCalories,
-                id,
-            ],
-            (err) => {
-                if (err) {
-                    console.error('Błąd podczas aktualizowania zadania:', err);
-                    // Jeśli chcesz przerwać działanie pętli w przypadku błędu, możesz zwrócić tutaj odpowiedź:
-                    // return res.status(500).json({ message: 'Błąd podczas aktualizowania zadania.' });
-                }
-                console.log('Zadanie zostało zaktualizowane:', { id });
-            }
-        );
-    });
+            } = editedTask;
 
-    res.status(200).json({ message: 'Zadania zostały zaktualizowane.' });
+            const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=? WHERE id=?`;
+            await new Promise((resolve, reject) => {
+                db.query(
+                    sql,
+                    [
+                        username,
+                        name,
+                        category,
+                        date,
+                        grams,
+                        calories,
+                        proteins,
+                        productWholeCalories,
+                        id,
+                    ],
+                    (err) => {
+                        if (err) {
+                            console.error('Błąd podczas aktualizowania zadania:', err);
+                            reject(err);
+                        } else {
+                            console.log('Zadanie zostało zaktualizowane:', { id });
+                            resolve();
+                        }
+                    }
+                );
+            });
+        }
+
+        res.status(200).json({ message: 'Zadania zostały zaktualizowane.' });
+    } catch (error) {
+        console.error('Błąd podczas zapisywania zmian:', error);
+        res.status(500).json({ message: 'Wystąpił błąd podczas aktualizacji zadań.' });
+    }
 });
 
 
