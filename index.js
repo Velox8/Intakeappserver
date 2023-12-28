@@ -642,7 +642,7 @@ app.post('/addTask', (req, res) => {
 app.post('/updateTasks', (req, res) => {
     let editedTasks = req.body.editedTasks; // Dane przesłane z przeglądarki
     const userToken = req.headers.authorization;
-
+	console.log(editedTasks)
     console.log('Received user token:', userToken); // Console log otrzymanego tokenu
 
     // Funkcja sprawdzająca poprawność tokenu JWT
@@ -679,7 +679,7 @@ app.post('/updateTasks', (req, res) => {
             productWholeCalories,
 			id,
         } = editedTask;
-
+		console.log('Zadanie do aktualizacji:', { id })
         const sql = `UPDATE tasks SET username=?, name=?, category=?, date=?, grams=?, proteins=?, calories=?, productWholeCalories=? WHERE id=?`;
         db.query(
             sql,
@@ -694,6 +694,7 @@ app.post('/updateTasks', (req, res) => {
                 productWholeCalories,
                 id,
             ],
+			
             (err) => {
                 if (err) {
                     console.error('Błąd podczas aktualizowania zadania:', err);
@@ -702,6 +703,7 @@ app.post('/updateTasks', (req, res) => {
                 }
                 console.log('Zadanie zostało zaktualizowane:', { id });
             }
+			
         );
     });
 
