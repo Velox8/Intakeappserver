@@ -643,7 +643,7 @@ app.post('/updateTasks', (req, res) => {
     // let editedTasks = req.body.editedTasks; // Dane przesłane z przeglądarki
 	const { editedTask } = req.body;
     const userToken = req.headers.authorization;
-	console.log(editedTasks)
+	console.log(req.body)
 	if (typeof editedTask !== 'undefined') {
 		// Tutaj wykonaj kod, który używa zmiennej editedTask
 	  } else {
