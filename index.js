@@ -23,6 +23,11 @@ const httpProxy = require('http-proxy');
 // });
 const port = process.env.PORT || 3000;
 
+// const PORT = 5000;
+// app.listen(PORT, () => {
+// 	console.log(`Server is running on port ${PORT}`);
+// });
+
 app.use(cors());
 
 app.use(express.json());
@@ -30,7 +35,7 @@ app.use(helmet());
 
 function customCors(req, res, next) {
 	// Adres, z którego chcesz zezwolić na żądania (możesz zmienić ten adres)
-	const allowedOrigin = 'https://sprightly-tulumba-2baacf.netlify.app';
+	const allowedOrigin = 'https://maksymilianliczy.netlify.app';
 
 	// Sprawdź, czy żądanie pochodzi z dozwolonego adresu
 	const requestOrigin = req.headers.origin;
@@ -704,6 +709,43 @@ app.post('/updateTasks/:username', (req, res) => {
 
 	res.status(200).json({ message: 'Zadania zostały zaktualizowane.' });
 });
+app.delete('/deleteTask/:taskId', (req, res) => {
+	const taskId = req.params.taskId;
+	const userToken = req.headers.authorization;
+
+	console.log('Received user token:', userToken); // Console log otrzymanego tokenu
+
+	// Funkcja sprawdzająca poprawność tokenu JWT
+	function userTokenIsValid(token) {
+		try {
+			const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
+			console.log('Decoded token:', decoded); // Console log zdekodowanego tokenu
+			return decoded;
+		} catch (err) {
+			return false;
+		}
+	}
+	if (!userTokenIsValid(userToken)) {
+		return res.status(401).json({ message: 'Brak autoryzacji.' });
+	}
+	const deleteQuery = `DELETE FROM tasks WHERE id = ${taskId}`;
+
+	db.query(deleteQuery, (error, results) => {
+		if (error) {
+			console.error('Błąd podczas usuwania zadania:', error);
+			return res
+				.status(500)
+				.json({ message: 'Wystąpił błąd podczas usuwania zadania' });
+		}
+
+		if (results.affectedRows === 0) {
+			return res.status(404).json({ message: 'Zadanie nie znalezione' });
+		}
+
+		return res.status(200).json({ message: 'Zadanie zostało usunięte' });
+	});
+});
+
 app.get('/', (req, res) => {
 	res.send('Hello World!');
 });
