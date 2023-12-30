@@ -311,6 +311,7 @@ app.post('/addProduct', (req, res) => {
 app.delete('/deleteProduct/:productId', (req, res) => {
 	const productId = req.params.productId;
 
+  
 	const userToken = req.headers.authorization;
 
 	console.log('Received user token:', userToken); // Console log otrzymanego tokenu
@@ -328,24 +329,22 @@ app.delete('/deleteProduct/:productId', (req, res) => {
 	if (!userTokenIsValid(userToken)) {
 		return res.status(401).json({ message: 'Brak autoryzacji.' });
 	}
-
+  
 	const deleteProductQuery = `DELETE FROM products WHERE id = ${productId}`;
-
+  
 	db.query(deleteProductQuery, (error, results) => {
-		if (error) {
-			console.error('Błąd podczas usuwania produktu:', error);
-			return res
-				.status(500)
-				.json({ message: 'Wystąpił błąd podczas usuwania produktu' });
-		}
-
-		if (results.affectedRows === 0) {
-			return res.status(404).json({ message: 'Produkt nie znaleziony' });
-		}
-
-		return res.status(200).json({ message: 'Produkt został usunięty' });
+	  if (error) {
+		console.error('Błąd podczas usuwania produktu:', error);
+		return res.status(500).json({ message: 'Wystąpił błąd podczas usuwania produktu' });
+	  }
+  
+	  if (results.affectedRows === 0) {
+		return res.status(404).json({ message: 'Produkt nie znaleziony' });
+	  }
+  
+	  return res.status(200).json({ message: 'Produkt został usunięty' });
 	});
-});
+  });
 // Pozostała część kodu bez zmian
 
 db.connect((err) => {
@@ -787,6 +786,57 @@ app.get('/', (req, res) => {
 	res.send('Hello World!');
 });
 
-app.listen(port, '0.0.0.0', () => {
+
+
+const restartServer = () => {
+	// Wyświetlenie informacji o restarcie serwera
+	console.log('Restarting server...');
+	
+	// Zamknięcie serwera
+	server.close(() => {
+	  // Po zamknięciu serwera otwórz go ponownie
+	  const reopenedServer = app.listen(port, '0.0.0.0', () => {
+		console.log(`Server is running on port ${port}`);
+	  });
+  
+	  // Ustawienie nowego serwera jako serwer do dalszego użytku
+	  server = reopenedServer;
+	  
+	  // Po ponownym uruchomieniu wyświetlenie informacji o ponownym uruchomieniu serwera
+	  console.log('Server restarted.');
+	});
+  };
+  
+  // Uruchomienie serwera
+  let server = app.listen(port, '0.0.0.0', () => {
 	console.log(`Server is running on port ${port}`);
-});
+  });
+  
+  // Uruchomienie interwału do restartowania co 24 godziny (86400000 milisekund)
+  const interval = setInterval(restartServer, 12 * 60 * 60 * 1000);
+  
+  // Obsługa zdarzenia SIGINT (Ctrl+C), czyszczenie interwału i zamykanie serwera
+  process.on('SIGINT', () => {
+	clearInterval(interval); // Wyczyszczenie interwału
+	server.close(() => {
+	  console.log('Server shut down.');
+	  process.exit(0); // Wyjście z procesu Node.js
+	});
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// app.listen(port, '0.0.0.0', () => {
+// 	console.log(`Server is running on port ${port}`);
+// });
