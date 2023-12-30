@@ -821,7 +821,7 @@ const restartServer = () => {
 	server.close(() => {
 	  console.log('Server shut down.');
 	  process.exit(0); // Wyjście z procesu Node.js
-	});
+	}); 
   });
 
 
