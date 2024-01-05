@@ -788,24 +788,24 @@ app.get('/', (req, res) => {
 
 
 
-const restartServer = () => {
-	// Wyświetlenie informacji o restarcie serwera
-	console.log('Restarting server...');
+// const restartServer = () => {
+// 	// Wyświetlenie informacji o restarcie serwera
+// 	console.log('Restarting server...');
 	
-	// Zamknięcie serwera
-	server.close(() => {
-	  // Po zamknięciu serwera otwórz go ponownie
-	  const reopenedServer = app.listen(port, '0.0.0.0', () => {
-		console.log(`Server is running on port ${port}`);
-	  });
+// 	// Zamknięcie serwera
+// 	server.close(() => {
+// 	  // Po zamknięciu serwera otwórz go ponownie
+// 	  const reopenedServer = app.listen(port, '0.0.0.0', () => {
+// 		console.log(`Server is running on port ${port}`);
+// 	  });
   
-	  // Ustawienie nowego serwera jako serwer do dalszego użytku
-	  server = reopenedServer;
+// 	  // Ustawienie nowego serwera jako serwer do dalszego użytku
+// 	  server = reopenedServer;
 	  
-	  // Po ponownym uruchomieniu wyświetlenie informacji o ponownym uruchomieniu serwera
-	  console.log('Server restarted.');
-	});
-  };
+// 	  // Po ponownym uruchomieniu wyświetlenie informacji o ponownym uruchomieniu serwera
+// 	  console.log('Server restarted.');
+// 	});
+//   };
   app.listen(port, '0.0.0.0', () => {
 	console.log(`Server is running on port ${port}`)
   })
