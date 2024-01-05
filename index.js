@@ -806,23 +806,25 @@ const restartServer = () => {
 	  console.log('Server restarted.');
 	});
   };
-  
+  app.listen(port, '0.0.0.0', () => {
+	console.log(`Server is running on port ${port}`)
+  })
   // Uruchomienie serwera
-  let server = app.listen(port, '0.0.0.0', () => {
-	console.log(`Server is running on port ${port}`);
-  });
+//   let server = app.listen(port, '0.0.0.0', () => {
+// 	console.log(`Server is running on port ${port}`);
+//   });
   
-  // Uruchomienie interwału do restartowania co 24 godziny (86400000 milisekund)
-  const interval = setInterval(restartServer, 12 * 60 * 60 * 1000);
+//   // Uruchomienie interwału do restartowania co 24 godziny (86400000 milisekund)
+//   const interval = setInterval(restartServer, 12 * 60 * 60 * 1000);
   
-  // Obsługa zdarzenia SIGINT (Ctrl+C), czyszczenie interwału i zamykanie serwera
-  process.on('SIGINT', () => {
-	clearInterval(interval); // Wyczyszczenie interwału
-	server.close(() => {
-	  console.log('Server shut down.');
-	  process.exit(0); // Wyjście z procesu Node.js
-	}); 
-  });
+//   // Obsługa zdarzenia SIGINT (Ctrl+C), czyszczenie interwału i zamykanie serwera
+//   process.on('SIGINT', () => {
+// 	clearInterval(interval); // Wyczyszczenie interwału
+// 	server.close(() => {
+// 	  console.log('Server shut down.');
+// 	  process.exit(0); // Wyjście z procesu Node.js
+// 	}); 
+//   });
 
 
 
