@@ -35,7 +35,8 @@ app.use(helmet());
 
 function customCors(req, res, next) {
 	// Adres, z którego chcesz zezwolić na żądania (możesz zmienić ten adres)
-	const allowedOrigin = 'https://maksymilianliczy.netlify.app';
+	// const allowedOrigin = 'https://maksymilianliczy.netlify.app';
+	const allowedOrigin = 'http://localhost:3000';
 
 	// Sprawdź, czy żądanie pochodzi z dozwolonego adresu
 	const requestOrigin = req.headers.origin;
@@ -308,31 +309,69 @@ app.post('/addProduct', (req, res) => {
 		}
 	);
 });
-app.delete('/deleteProduct/:productId', (req, res) => {
-	const productId = req.params.productId;
+// app.delete('/deleteProduct/:productId', (req, res) => {
+// 	const productId = req.params.productId;
 
   
+// 	const userToken = req.headers.authorization;
+
+// 	console.log('Received user token:', userToken); // Console log otrzymanego tokenu
+
+// 	// Funkcja sprawdzająca poprawność tokenu JWT
+// 	function userTokenIsValid(token) {
+// 		try {
+// 			const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
+// 			console.log('Decoded token:', decoded); // Console log zdekodowanego tokenu
+// 			return decoded;
+// 		} catch (err) {
+// 			return false;
+// 		}
+// 	}
+// 	if (!userTokenIsValid(userToken)) {
+// 		return res.status(401).json({ message: 'Brak autoryzacji.' });
+// 	}
+  
+// 	const deleteProductQuery = `DELETE FROM products WHERE id = ${productId}`;
+  
+// 	db.query(deleteProductQuery, (error, results) => {
+// 	  if (error) {
+// 		console.error('Błąd podczas usuwania produktu:', error);
+// 		return res.status(500).json({ message: 'Wystąpił błąd podczas usuwania produktu' });
+// 	  }
+  
+// 	  if (results.affectedRows === 0) {
+// 		return res.status(404).json({ message: 'Produkt nie znaleziony' });
+// 	  }
+  
+// 	  return res.status(200).json({ message: 'Produkt został usunięty' });
+// 	});
+//   });
+
+app.delete('/deleteProduct/:username/:productName', (req, res) => {
+	const username = req.params.username;
+	const productName = req.params.productName;
 	const userToken = req.headers.authorization;
-
+  
 	console.log('Received user token:', userToken); // Console log otrzymanego tokenu
-
+  
 	// Funkcja sprawdzająca poprawność tokenu JWT
 	function userTokenIsValid(token) {
-		try {
-			const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
-			console.log('Decoded token:', decoded); // Console log zdekodowanego tokenu
-			return decoded;
-		} catch (err) {
-			return false;
-		}
+	  try {
+		const decoded = jwt.verify(token.replace('Bearer ', ''), secretKey);
+		console.log('Decoded token:', decoded); // Console log zdekodowanego tokenu
+		return decoded;
+	  } catch (err) {
+		return false;
+	  }
 	}
+  
 	if (!userTokenIsValid(userToken)) {
-		return res.status(401).json({ message: 'Brak autoryzacji.' });
+	  return res.status(401).json({ message: 'Brak autoryzacji.' });
 	}
   
-	const deleteProductQuery = `DELETE FROM products WHERE id = ${productId}`;
+	const deleteProductQuery = `DELETE FROM products WHERE username = ? AND name = ?`;
   
-	db.query(deleteProductQuery, (error, results) => {
+	db.query(deleteProductQuery, [username, productName], (error, results) => {
 	  if (error) {
 		console.error('Błąd podczas usuwania produktu:', error);
 		return res.status(500).json({ message: 'Wystąpił błąd podczas usuwania produktu' });
@@ -345,6 +384,7 @@ app.delete('/deleteProduct/:productId', (req, res) => {
 	  return res.status(200).json({ message: 'Produkt został usunięty' });
 	});
   });
+  
 // Pozostała część kodu bez zmian
 
 db.connect((err) => {
@@ -806,9 +846,9 @@ app.get('/', (req, res) => {
 // 	  console.log('Server restarted.');
 // 	});
 //   };
-  app.listen(port, '0.0.0.0', () => {
-	console.log(`Server is running on port ${port}`)
-  })
+//   app.listen(port, '0.0.0.0', () => {
+// 	console.log(`Server is running on port ${port}`)
+//   })
   // Uruchomienie serwera
 //   let server = app.listen(port, '0.0.0.0', () => {
 // 	console.log(`Server is running on port ${port}`);
@@ -839,6 +879,6 @@ app.get('/', (req, res) => {
 
 
 
-// app.listen(port, '0.0.0.0', () => {
-// 	console.log(`Server is running on port ${port}`);
-// });
+app.listen(port, '0.0.0.0', () => {
+	console.log(`Server is running on port ${port}`);
+});
