@@ -471,7 +471,7 @@ app.post('/login', (req, res) => {
 			username: row.username,
 			email: row.email,
 		};
-		const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
+		const token = jwt.sign(payload, secretKey, { expiresIn: '5h' });
 
 		const updateTokenQuery = `UPDATE users SET token = ? WHERE id = ?`;
 		db.query(updateTokenQuery, [token, row.id], (err, result) => {
@@ -601,7 +601,7 @@ app.use(express.json());
 app.post('/register', (req, res) => {
 	const { username, password, email } = req.body;
 
-	const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '1h' });
+	const token = jwt.sign({ username, email }, 'secretKey', { expiresIn: '5h' });
 
 	const sql = `INSERT INTO users (username, password, email, token) VALUES (?, ?, ?, ?)`;
 	db.query(sql, [username, password, email, token], (err, result) => {
