@@ -611,7 +611,7 @@ app.post('/register', (req, res) => {
 				.status(500)
 				.json({ message: 'Błąd podczas rejestracji użytkownika.' });
 		}
-		console.log('Użytkownik został zarejestrowany:', { username, email });
+		console.log('Użytkownik został zarejestrowany:', { username, email }); 
 		res
 			.status(201)
 			.json({ message: 'Użytkownik został zarejestrowany.', token });
