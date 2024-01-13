@@ -680,7 +680,7 @@ app.post('/addTask', (req, res) => {
 
 	tasks.forEach((task) => {
 		const {
-			username,
+			username, 
 			name,
 			category,
 			date,
